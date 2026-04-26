@@ -9,18 +9,20 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
+        "dedoc/scramble": "^0.13.21",
+        "functional/users": "*",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
-        "xefi/laravel-osdd": "^1.2",
-        "technical/horizon": "*",
-        "technical/telescope": "*",
         "technical/access-control": "*",
-        "functional/users": "*",
-        "technical/osdd": "*",
+        "technical/horizon": "*",
         "technical/media-library": "*",
+        "technical/osdd": "*",
         "technical/rest": "*",
-        "technical/xefi-faker": "*"
+        "technical/telescope": "*",
+        "technical/xefi-faker": "*",
+        "xefi/laravel-osdd": "^1.2",
+        "technical/documentation": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
