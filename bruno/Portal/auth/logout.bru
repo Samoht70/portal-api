@@ -1,0 +1,33 @@
+meta {
+  name: logout
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/logout
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "email": "",
+    "password": "password"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 || res.status === 204) {
+    bru.setGlobalEnvVar('jwt', '');
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

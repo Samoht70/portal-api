@@ -1,0 +1,16 @@
+meta {
+  name: search
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{path}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

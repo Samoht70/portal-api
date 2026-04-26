@@ -1,0 +1,34 @@
+meta {
+  name: refresh
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/refresh
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "email": "{{email}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    const accessToken = res.body.access_token;
+    bru.setGlobalEnvVar('jwt', accessToken);
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

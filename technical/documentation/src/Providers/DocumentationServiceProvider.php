@@ -2,7 +2,6 @@
 
 namespace Technical\Documentation\Providers;
 
-use Technical\Documentation\Database\Seeders\DocumentationSeeder;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
 class DocumentationServiceProvider extends LayerServiceProvider

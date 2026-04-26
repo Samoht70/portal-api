@@ -4,13 +4,12 @@
     "type": "layer",
     "version": "1.0.0",
     "require": {
-        "xefi/laravel-osdd": "*"
+        "xefi/laravel-osdd": "*",
+        "dedoc/scramble": "^0.13.21"
     },
     "autoload": {
         "psr-4": {
-            "Technical\\Documentation\\": "src/",
-            "Technical\\Documentation\\Database\\Seeders\\": "database/seeders/",
-            "Technical\\Documentation\\Database\\Factories\\": "database/factories/"
+            "Technical\\Documentation\\": "src/"
         }
     },
     "minimum-stability": "stable",

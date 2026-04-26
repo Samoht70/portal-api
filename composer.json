@@ -10,7 +10,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.5",
-        "dedoc/scramble": "^0.13.21",
         "functional/users": "*",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
@@ -22,7 +21,9 @@
         "technical/telescope": "*",
         "technical/xefi-faker": "*",
         "xefi/laravel-osdd": "^1.2",
-        "technical/documentation": "*"
+        "technical/documentation": "*",
+        "technical/authentication": "*",
+        "functional/organizations": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -34,7 +35,9 @@
         "phpunit/phpunit": "^12.5.12"
     },
     "autoload": {
-        "psr-4": {}
+        "psr-4": {
+            "App\\": "app/"
+        }
     },
     "autoload-dev": {
         "psr-4": {

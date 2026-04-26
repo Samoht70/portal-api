@@ -2,21 +2,30 @@
 
 namespace Functional\Users\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Lomkit\Access\Controls\HasControl;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Permission\Traits\HasRoles;
+use Technical\Authentication\Models\JwtUser;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
+#[Hidden(['password'])]
 #[UseFactory(UserFactory::class)]
-class User extends Authenticatable
+class User extends JwtUser implements HasLocalePreference, HasMedia
 {
-    use HasFactory, Notifiable;
+    use HasControl, HasFactory, HasRoles, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -26,8 +35,35 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(Site::class);
+    }
+
+    public function directManager(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function directManaged(): HasMany
+    {
+        return $this->hasMany(User::class, 'manager_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('avatar')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
+            ->singleFile();
+    }
+
+    public function preferredLocale(): string
+    {
+        return $this->language;
     }
 }

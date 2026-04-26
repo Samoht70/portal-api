@@ -1,6 +1,6 @@
 <?php
 
-namespace src;
+namespace Technical\AccessControl;
 
 use Lomkit\Access\Access;
 

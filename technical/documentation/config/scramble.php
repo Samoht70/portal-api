@@ -132,5 +132,7 @@ return [
         RestrictedDocsAccess::class,
     ],
 
-    'extensions' => [],
+    'extensions' => [
+        \Lomkit\Rest\Scramble\LomkitLaravelRestApiOperationExtension::class,
+    ],
 ];

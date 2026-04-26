@@ -11,7 +11,7 @@ class MediaResource extends Resource
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<User>
+     * @var class-string<Media>
      */
     public static $model = Media::class;
 

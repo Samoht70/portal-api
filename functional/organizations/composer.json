@@ -1,0 +1,25 @@
+{
+    "name": "functional/organizations",
+    "description": "",
+    "type": "layer",
+    "version": "1.0.0",
+    "require": {
+        "xefi/laravel-osdd": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Functional\\Organizations\\": "src/",
+            "Functional\\Organizations\\Database\\Seeders\\": "database/seeders/",
+            "Functional\\Organizations\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Functional\\Organizations\\Providers\\OrganizationsServiceProvider"
+            ]
+        }
+    }
+}

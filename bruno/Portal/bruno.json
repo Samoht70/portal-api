@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "name": "Portal",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "presets": {
+    "requestType": "http",
+    "requestUrl": "{{API_URL}}/{{resource}}/{{path}}"
+  }
+}
