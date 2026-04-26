@@ -1,0 +1,24 @@
+{
+    "name": "technical/media-library",
+    "description": "",
+    "type": "layer",
+    "version": "1.0.0",
+    "require": {
+        "xefi/laravel-osdd": "*",
+        "spatie/laravel-medialibrary": "^11.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Technical\\MediaLibrary\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Technical\\MediaLibrary\\Providers\\MediaLibraryServiceProvider"
+            ]
+        }
+    }
+}

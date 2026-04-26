@@ -1,0 +1,32 @@
+{
+    "name": "technical/xefi-faker",
+    "description": "",
+    "type": "layer",
+    "version": "1.0.0",
+    "require": {
+        "xefi/laravel-osdd": "*",
+        "xefi/faker-php-laravel": "^v1.0.0",
+        "xefi/faker-php-locales-fr-fr": "^v1.0.0",
+        "xefi/faker-php-images": "^v1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Technical\\XefiFaker\\": "src/",
+            "Technical\\XefiFaker\\Database\\": "database/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Technical\\XefiFaker\\Providers\\XefiFakerServiceProvider"
+            ]
+        },
+        "faker": {
+            "providers": [
+                "Technical\\XefiFaker\\Providers\\ExtensionsProvider"
+            ]
+        }
+    }
+}
