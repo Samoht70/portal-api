@@ -1,6 +1,7 @@
 <?php
 
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
+use Lomkit\Rest\Scramble\LomkitLaravelRestApiOperationExtension;
 
 return [
     /*
@@ -133,6 +134,6 @@ return [
     ],
 
     'extensions' => [
-        \Lomkit\Rest\Scramble\LomkitLaravelRestApiOperationExtension::class,
+        LomkitLaravelRestApiOperationExtension::class,
     ],
 ];
