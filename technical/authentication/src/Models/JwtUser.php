@@ -7,6 +7,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class JwtUser extends Authenticatable implements JWTSubject
 {
+    const string SSO_SHARED_COLUMN = 'email';
+
     public function getJWTIdentifier(): string
     {
         return $this->getKey();
@@ -15,7 +17,7 @@ class JwtUser extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [
-            'id' => $this->getJWTIdentifier(),
+            'sso_id' => $this->{self::SSO_SHARED_COLUMN},
         ];
     }
 }
