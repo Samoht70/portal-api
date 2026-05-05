@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3091d05ff0f0b476f9bf8dbc4ffbc56f",
+    "content-hash": "f7f0aa90ebefe27af672ab434d649a66",
     "packages": [
         {
             "name": "brick/math",
@@ -211,6 +211,36 @@
                 }
             ],
             "time": "2025-08-20T19:15:30+00:00"
+        },
+        {
+            "name": "dailyapps/sync-relay",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./dailyapps/sync-relay",
+                "reference": "2afb3761ee29feead4889f16074a1888810910a0"
+            },
+            "require": {
+                "xefi/laravel-osdd": "*"
+            },
+            "type": "layer",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dailyapps\\SyncRelay\\Providers\\SyncRelayServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dailyapps\\SyncRelay\\": "src/",
+                    "Dailyapps\\SyncRelay\\Database\\Seeders\\": "database/seeders/",
+                    "Dailyapps\\SyncRelay\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "dedoc/scramble",
@@ -9891,9 +9921,10 @@
             "dist": {
                 "type": "path",
                 "url": "./technical/documentation",
-                "reference": "d96106fbe7600f8ef9665bf481e90993b14e0d2c"
+                "reference": "e32880af913856ffae470048fe75e8f28f1f9ff8"
             },
             "require": {
+                "dedoc/scramble": "^0.13.21",
                 "xefi/laravel-osdd": "*"
             },
             "type": "layer",
@@ -9906,9 +9937,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Technical\\Documentation\\": "src/",
-                    "Technical\\Documentation\\Database\\Seeders\\": "database/seeders/",
-                    "Technical\\Documentation\\Database\\Factories\\": "database/factories/"
+                    "Technical\\Documentation\\": "src/"
                 }
             },
             "transport-options": {

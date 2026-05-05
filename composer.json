@@ -23,7 +23,8 @@
         "xefi/laravel-osdd": "^1.2",
         "technical/documentation": "*",
         "technical/authentication": "*",
-        "functional/organizations": "*"
+        "functional/organizations": "*",
+        "dailyapps/sync-relay": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -104,6 +105,10 @@
         {
             "type": "path",
             "url": "./technical/*"
+        },
+        {
+            "type": "path",
+            "url": "./dailyapps/*"
         }
     ]
 }
