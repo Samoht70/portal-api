@@ -23,7 +23,8 @@
         "xefi/laravel-osdd": "^1.2",
         "technical/documentation": "*",
         "technical/authentication": "*",
-        "functional/organizations": "*"
+        "functional/organizations": "*",
+        "technical/translations": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

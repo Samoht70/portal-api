@@ -1,0 +1,24 @@
+{
+    "name": "technical/translations",
+    "description": "",
+    "type": "layer",
+    "version": "1.0.0",
+    "require": {
+        "xefi/laravel-osdd": "*",
+        "astrotomic/laravel-translatable": "^11.17.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Technical\\Translations\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Technical\\Translations\\Providers\\TranslationsServiceProvider"
+            ]
+        }
+    }
+}
