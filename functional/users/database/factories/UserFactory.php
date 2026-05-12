@@ -5,6 +5,7 @@ namespace Functional\Users\Database\Factories;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Technical\AccessControl\Enums\RoleName;
 
 class UserFactory extends Factory
 {
@@ -27,7 +28,7 @@ class UserFactory extends Factory
     {
         return $this
             ->afterCreating(function (User $user) {
-                $user->assignRole('super-admin');
+                $user->assignRole(RoleName::SuperAdmin->value);
             });
     }
 
@@ -35,7 +36,7 @@ class UserFactory extends Factory
     {
         return $this
             ->afterCreating(function (User $user) {
-                $user->assignRole('administrator');
+                $user->assignRole(RoleName::Admin->value);
             });
     }
 
@@ -43,7 +44,7 @@ class UserFactory extends Factory
     {
         return $this
             ->afterCreating(function (User $user) {
-                $user->assignRole('standard');
+                $user->assignRole(RoleName::Standard->value);
             });
     }
 }

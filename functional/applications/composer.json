@@ -1,0 +1,25 @@
+{
+    "name": "functional/applications",
+    "description": "",
+    "type": "layer",
+    "version": "1.0.0",
+    "require": {
+        "xefi/laravel-osdd": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Functional\\Applications\\": "src/",
+            "Functional\\Applications\\Database\\Seeders\\": "database/seeders/",
+            "Functional\\Applications\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Functional\\Applications\\Providers\\ApplicationsServiceProvider"
+            ]
+        }
+    }
+}

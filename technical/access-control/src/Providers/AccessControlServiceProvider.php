@@ -2,6 +2,7 @@
 
 namespace Technical\AccessControl\Providers;
 
+use Technical\AccessControl\Database\Seeders\RolesAndPermissionsSeeder;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
 class AccessControlServiceProvider extends LayerServiceProvider
@@ -10,6 +11,10 @@ class AccessControlServiceProvider extends LayerServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+
+            $this->loadSeeders([
+                RolesAndPermissionsSeeder::class,
+            ], 0);
         }
 
         $this->overrideConfigFrom(__DIR__.'/../../config/permission.php', 'permission');

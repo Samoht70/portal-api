@@ -98,7 +98,7 @@ return [
     | set this to 'App\Translations'.
     |
     */
-    'translation_model_namespace' => null,
+    'translation_model_namespace' => 'Technical\\Translations\\Models',
 
     /*
     |--------------------------------------------------------------------------
@@ -159,5 +159,5 @@ return [
     | a separate model's property, just set it here.
     |
      */
-    'translations_wrapper' => null,
+    'translations_wrapper' => 'translations',
 ];

@@ -1,7 +1,4 @@
-<?php
-
-namespace Xefi\Faker\Container;
-
+<?php namespace Xefi\Faker\Container;
 /**
  * @method string copySampleBackgroundToPath(string $path)
  * @method string copySampleImageToPath(string $path)
@@ -34,6 +31,7 @@ namespace Xefi\Faker\Container;
  * @method string sdl()
  * @method string tld()
  * @method string domain()
+ * @method string ip()
  * @method string ipv4()
  * @method string ipv6()
  * @method mixed macAddress()
@@ -105,4 +103,4 @@ namespace Xefi\Faker\Container;
  * @method string company()
  * @method string nir(?string $gender = null, bool $formatted = false)
  */
-class Container {}
+	class Container{}

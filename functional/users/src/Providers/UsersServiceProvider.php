@@ -19,7 +19,7 @@ class UsersServiceProvider extends LayerServiceProvider
 
             $this->loadSeeders([
                 UserSeeder::class,
-            ], 2);
+            ], 3);
         }
 
         $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
