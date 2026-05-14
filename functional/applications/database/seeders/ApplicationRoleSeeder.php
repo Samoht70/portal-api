@@ -2,7 +2,8 @@
 
 namespace Functional\Applications\Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Functional\Applications\Enums\ApplicationSlug;
+use Functional\Applications\Models\RoleDefinition;
 use Illuminate\Database\Seeder;
 
 class ApplicationRoleSeeder extends Seeder
@@ -12,6 +13,14 @@ class ApplicationRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        foreach (ApplicationSlug::cases() as $applicationSlug) {
+            $application = $applicationSlug->toModel();
+
+            $roleIds = RoleDefinition::query()
+                ->whereIn('slug', $applicationSlug->roles())
+                ->pluck('id');
+
+            $application->roles()->sync($roleIds);
+        }
     }
 }

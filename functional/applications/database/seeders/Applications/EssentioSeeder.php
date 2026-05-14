@@ -42,7 +42,7 @@ class EssentioSeeder extends Seeder
                         'description' => 'Je digitale visitekaartje altijd binnen handbereik.',
                     ],
                 ],
-                'slug' => ApplicationSlug::BUSINESS_CARD,
+                'slug' => ApplicationSlug::BusinessCard,
             ],
             [
                 'translations' => [
@@ -71,7 +71,7 @@ class EssentioSeeder extends Seeder
                         'description' => 'Het beheren van uw verlof was nog nooit zo eenvoudig.',
                     ],
                 ],
-                'slug' => ApplicationSlug::LEAVE_MANAGEMENT,
+                'slug' => ApplicationSlug::LeaveManagement,
             ],
             [
                 'translations' => [
@@ -100,7 +100,7 @@ class EssentioSeeder extends Seeder
                         'description' => 'Integreer uw medewerkers moeiteloos.',
                     ],
                 ],
-                'slug' => ApplicationSlug::EMPLOYEE_GUIDE,
+                'slug' => ApplicationSlug::EmployeeGuide,
             ],
             [
                 'translations' => [
@@ -129,7 +129,7 @@ class EssentioSeeder extends Seeder
                         'description' => 'Beheer uw onkostennota’s waar u ook bent.',
                     ],
                 ],
-                'slug' => ApplicationSlug::EXPENSE_REPORTS,
+                'slug' => ApplicationSlug::ExpenseReports,
             ],
             [
                 'translations' => [
@@ -158,7 +158,7 @@ class EssentioSeeder extends Seeder
                         'description' => 'Maak en deel uw vragenlijsten in 3 klikken.',
                     ],
                 ],
-                'slug' => ApplicationSlug::SURVEY,
+                'slug' => ApplicationSlug::Survey,
             ],
             [
                 'translations' => [
@@ -167,27 +167,27 @@ class EssentioSeeder extends Seeder
                         'description' => 'Suivez en temps réel la présence de vos invités.',
                     ],
                     'en' => [
-                        'name' => 'Attendance Tracking',
+                        'name' => 'Attendance',
                         'description' => 'Track your guests attendance in real time.',
                     ],
                     'es' => [
-                        'name' => 'Control de asistencia',
+                        'name' => 'Asistencia',
                         'description' => 'Sigue la asistencia de tus invitados en tiempo real.',
                     ],
                     'de' => [
-                        'name' => 'Anwesenheitsliste',
+                        'name' => 'Anwesenheit',
                         'description' => 'Verfolgen Sie die Anwesenheit Ihrer Gäste in Echtzeit.',
                     ],
                     'it' => [
-                        'name' => 'Registro presenze',
+                        'name' => 'Presenze',
                         'description' => 'Monitora la presenza dei tuoi ospiti in tempo reale.',
                     ],
                     'nl' => [
-                        'name' => 'Aanwezigheidsregistratie',
+                        'name' => 'Aanwezigheid',
                         'description' => 'Volg de aanwezigheid van uw gasten in realtime.',
                     ],
                 ],
-                'slug' => ApplicationSlug::ATTENDANCE_TRACKING,
+                'slug' => ApplicationSlug::Attendance,
             ],
             [
                 'translations' => [
@@ -216,7 +216,7 @@ class EssentioSeeder extends Seeder
                         'description' => 'Organiseer eenvoudig gedeelde ritten voor uw teams.',
                     ],
                 ],
-                'slug' => ApplicationSlug::CARPOOLING,
+                'slug' => ApplicationSlug::Carpooling,
             ],
         ];
 

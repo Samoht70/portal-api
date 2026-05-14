@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[UseFactory(ApplicationFactory::class)]
 #[Fillable(['pack_id', 'slug'])]
@@ -34,8 +34,10 @@ class Application extends Model implements TranslatableContract
         return $this->belongsTo(Pack::class);
     }
 
-    public function roles(): HasMany
+    public function roles(): BelongsToMany
     {
-        return $this->hasMany(ApplicationRole::class);
+        return $this->belongsToMany(RoleDefinition::class, 'application_roles')
+            ->using(ApplicationRole::class)
+            ->withTimestamps();
     }
 }

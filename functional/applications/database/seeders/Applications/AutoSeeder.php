@@ -27,7 +27,7 @@ class AutoSeeder extends Seeder
                     'it' => [],
                     'nl' => [],
                 ],
-                'slug' => ApplicationSlug::BUSINESS_CARD,
+                'slug' => ApplicationSlug::BusinessCard,
             ],
         ];
 

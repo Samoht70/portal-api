@@ -42,7 +42,7 @@ class ProductivitySeeder extends Seeder
                         'description' => 'Optimaliseer uw werkbonnen in een oogwenk.',
                     ],
                 ],
-                'slug' => ApplicationSlug::WORK_ORDER,
+                'slug' => ApplicationSlug::WorkOrder,
             ],
             [
                 'translations' => [
@@ -71,7 +71,7 @@ class ProductivitySeeder extends Seeder
                         'description' => 'De onmisbare tool om uw verkoop te stimuleren.',
                     ],
                 ],
-                'slug' => ApplicationSlug::SALESPERSON,
+                'slug' => ApplicationSlug::SalesPerson,
             ],
             [
                 'translations' => [
@@ -100,7 +100,7 @@ class ProductivitySeeder extends Seeder
                         'description' => 'Verhoog uw verkoopprestaties.',
                     ],
                 ],
-                'slug' => ApplicationSlug::SALES_UP,
+                'slug' => ApplicationSlug::SalesUp,
             ],
         ];
 
