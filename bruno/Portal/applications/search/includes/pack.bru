@@ -1,0 +1,28 @@
+meta {
+  name: pack
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{action}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "search": {
+      "includes": [
+        {
+          "relation": "pack"
+        }
+      ]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

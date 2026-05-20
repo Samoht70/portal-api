@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Lomkit\Access\Controls\Control;
 use Lomkit\Access\Perimeters\Perimeter;
 use Technical\AccessControl\Access\Perimeters\ClientPerimeter;
+use Technical\AccessControl\Access\Perimeters\GlobalPerimeter;
 use Technical\AccessControl\Access\Perimeters\OwnPerimeter;
 
 class UserControl extends Control
@@ -27,12 +28,24 @@ class UserControl extends Control
     protected function perimeters(): array
     {
         return [
-            ClientPerimeter::new()
-                ->allowed(function (Model $user, string $method) {
-                    return $user->can(sprintf('%s client users', $method));
+            GlobalPerimeter::new()
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s global %s', $method, (new $this->model)->getTable()));
                 })
-                ->should(function (Model $user, User $model) {
-                    return $model->site()
+                ->should(function (Model&User $user, User $model) {
+                    return true;
+                })
+                ->query(function (Builder $query, User $user) {
+                    return $query;
+                }),
+
+            ClientPerimeter::new()
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s client %s', $method, (new $this->model)->getTable()));
+                })
+                ->should(function (Model&User $user, User $model) {
+                    return $model
+                        ->site()
                         ->where('client_id', $user->site->client_id)
                         ->exists();
                 })
@@ -44,10 +57,10 @@ class UserControl extends Control
                 }),
 
             OwnPerimeter::new()
-                ->allowed(function (Model $user, string $method) {
-                    return $user->can(sprintf('%s own users', $method));
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s own %s', $method, (new $this->model)->getTable()));
                 })
-                ->should(function (Model $user, User $model) {
+                ->should(function (Model&User $user, User $model) {
                     return $model->is($user);
                 })
                 ->query(function (Builder $query, User $user) {

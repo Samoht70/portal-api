@@ -13,12 +13,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Lomkit\Access\Controls\HasControl;
 
 #[UseFactory(ApplicationFactory::class)]
 #[Fillable(['pack_id', 'slug'])]
 class Application extends Model implements TranslatableContract
 {
-    use HasFactory, HasUuids, Translatable;
+    use HasControl;
+    use HasFactory;
+    use HasUuids;
+    use Translatable;
 
     public $translatedAttributes = ['name', 'description'];
 
@@ -38,6 +42,7 @@ class Application extends Model implements TranslatableContract
     {
         return $this->belongsToMany(RoleDefinition::class, 'application_roles')
             ->using(ApplicationRole::class)
+            ->withPivot(['is_default'])
             ->withTimestamps();
     }
 }

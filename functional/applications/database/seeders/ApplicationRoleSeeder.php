@@ -15,12 +15,18 @@ class ApplicationRoleSeeder extends Seeder
     {
         foreach (ApplicationSlug::cases() as $applicationSlug) {
             $application = $applicationSlug->toModel();
+            $defaultSlug = $applicationSlug->defaultRole();
 
-            $roleIds = RoleDefinition::query()
+            $roles = RoleDefinition::query()
                 ->whereIn('slug', $applicationSlug->roles())
-                ->pluck('id');
+                ->get(['id', 'slug']);
 
-            $application->roles()->sync($roleIds);
+            $application->roles()->sync(
+                collect($roles)
+                    ->mapWithKeys(
+                        fn(RoleDefinition $role) => [$role->getKey() => ['is_default' => $role->slug === $defaultSlug]]
+                    )
+            );
         }
     }
 }

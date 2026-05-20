@@ -17,7 +17,24 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $permissions = [];
+        $permissions = [
+            // Global
+            'view global packs',
+            'view global applications',
+            'view global role_definitions',
+            'view global clients',
+            'view global sites',
+            'view global users',
+
+            // Client
+            'view client sites',
+            'view client users',
+
+            // Own
+            'view own clients',
+            'view own sites',
+            'view own users',
+        ];
 
         foreach ($permissions as $permission) {
             Permission::findOrCreate($permission);
@@ -26,12 +43,33 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $superAdmin = Role::findOrCreate(RoleName::SuperAdmin->value);
-        $superAdmin->syncPermissions([]);
+        $superAdmin->syncPermissions([
+            'view global packs',
+            'view global applications',
+            'view global role_definitions',
+            'view global clients',
+            'view global sites',
+            'view global users',
+        ]);
 
         $administrator = Role::findOrCreate(RoleName::Admin->value);
-        $administrator->syncPermissions([]);
+        $administrator->syncPermissions([
+            'view global packs',
+            'view global applications',
+            'view global role_definitions',
+            'view own clients',
+            'view client sites',
+            'view client users',
+        ]);
 
         $standard = Role::findOrCreate(RoleName::Standard->value);
-        $standard->syncPermissions([]);
+        $standard->syncPermissions([
+            'view global packs',
+            'view global applications',
+            'view global role_definitions',
+            'view own clients',
+            'view own sites',
+            'view own users',
+        ]);
     }
 }

@@ -1,11 +1,11 @@
 meta {
-  name: search
+  name: details
   type: http
-  seq: 1
+  seq: 2
 }
 
-post {
-  url: {{API_URL}}/{{resource}}/{{path}}
+get {
+  url: {{API_URL}}/{{resource}}
   body: none
   auth: inherit
 }

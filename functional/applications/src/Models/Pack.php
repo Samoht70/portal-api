@@ -11,12 +11,16 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Lomkit\Access\Controls\HasControl;
 
 #[UseFactory(PackFactory::class)]
 #[Fillable(['slug'])]
 class Pack extends Model implements TranslatableContract
 {
-    use HasFactory, HasUuids, Translatable;
+    use HasControl;
+    use HasFactory;
+    use HasUuids;
+    use Translatable;
 
     public $translatedAttributes = ['name'];
 

@@ -57,4 +57,21 @@ enum ApplicationSlug: string
             default => [],
         };
     }
+
+    public function defaultRole(): RoleDefinitionSlug
+    {
+        return match ($this) {
+            self::Attendance,
+            self::Survey,
+            self::Carpooling,
+            self::BusinessCard,
+            self::LeaveManagement,
+            self::EmployeeGuide,
+            self::ExpenseReports => RoleDefinitionSlug::Standard,
+
+            self::WorkOrder => RoleDefinitionSlug::FieldTechnician,
+
+            self::SalesPerson, self::SalesUp => RoleDefinitionSlug::Sales,
+        };
+    }
 }

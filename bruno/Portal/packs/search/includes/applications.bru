@@ -1,0 +1,28 @@
+meta {
+  name: applications
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{action}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "search": {
+      "includes": [
+        {
+          "relation": "applications"
+        }
+      ]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

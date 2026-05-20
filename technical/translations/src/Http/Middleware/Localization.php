@@ -28,7 +28,10 @@ class Localization
             $locale = $request->getPreferredLanguage($supportedLocales);
         }
 
-        $locale = Str::of($locale)->before('-')->lower();
+        $locale = Str::of($locale)
+            ->before('-')
+            ->lower()
+            ->value();
 
         if (! in_array($locale, $supportedLocales)) {
             $locale = config('app.locale');

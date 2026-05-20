@@ -1,0 +1,22 @@
+meta {
+  name: simple
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{action}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "search": {}
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

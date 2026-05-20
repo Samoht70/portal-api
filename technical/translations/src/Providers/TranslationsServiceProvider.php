@@ -19,4 +19,15 @@ class TranslationsServiceProvider extends LayerServiceProvider
     {
         //
     }
+
+    protected function overrideConfigFrom(string $path, string $key): void
+    {
+        $this->app->booted(function () use ($path, $key) {
+            $config = $this->app->make('config');
+            $config->set($key, array_replace(
+                $config->get($key, []),
+                require $path,
+            ));
+        });
+    }
 }
