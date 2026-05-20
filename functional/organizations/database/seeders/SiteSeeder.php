@@ -23,7 +23,7 @@ class SiteSeeder extends Seeder
 
         Site::factory()
             ->for(Client::query()->where('name', 'XEFI')->first())
-            ->state(['name' => 'DAILYAPPS'])
+            ->state(['name' => 'DAILYAPPS', 'country' => 'France', 'country_alpha' => 'FR'])
             ->createOne();
     }
 }
