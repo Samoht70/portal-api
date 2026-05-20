@@ -47,4 +47,18 @@ class UserFactory extends Factory
                 $user->assignRole(RoleName::Standard->value);
             });
     }
+
+    public function withoutManager(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'manager_id' => null
+        ]);
+    }
+
+    public function language(string $language): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'language' => $language
+        ]);
+    }
 }
