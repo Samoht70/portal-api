@@ -37,12 +37,12 @@ class ControlMakeCommand extends BaseControlMakeCommand
         $layer = $this->resolveLayer();
         $layerNamespace = rtrim($layer->manifest->rootNamespace(), '\\');
 
-        $relative = Str::replaceFirst($layerNamespace . '\\Access\\Controls\\', '', $name);
+        $relative = Str::replaceFirst($layerNamespace.'\\Access\\Controls\\', '', $name);
 
-        return $layer->path . '/src/Access/Controls/' . str_replace('\\', '/', $relative) . '.php';
+        return $layer->path.'/src/Access/Controls/'.str_replace('\\', '/', $relative).'.php';
     }
 
-    protected function buildPerimetersReplacements(array $replace, array $perimeters)
+    protected function buildPerimetersReplacements(array $replace, array $perimeters): array
     {
         $perimetersImplementation = '';
 
@@ -66,7 +66,7 @@ class ControlMakeCommand extends BaseControlMakeCommand
 
         return array_merge($replace, [
             '{{ perimeters }}' => $perimetersImplementation,
-            '{{perimeters}}'   => $perimetersImplementation,
+            '{{perimeters}}' => $perimetersImplementation,
         ]);
     }
 
@@ -74,15 +74,15 @@ class ControlMakeCommand extends BaseControlMakeCommand
     {
         $layer = $this->resolveLayer();
 
-        $perimetersPath = $layer->path . '/src/Access/Perimeters';
+        $perimetersPath = $layer->path.'/src/Access/Perimeters';
 
-        if (!is_dir($perimetersPath)) {
+        if (! is_dir($perimetersPath)) {
             $perimetersLayer = $this->resolvePerimetersLayer();
 
-            $perimetersPath = $perimetersLayer->path . '/src/Access/Perimeters';
+            $perimetersPath = $perimetersLayer->path.'/src/Access/Perimeters';
         }
 
-        return (new Collection(Finder::create()->files()->depth(0)->in($perimetersPath)))
+        return new Collection(Finder::create()->files()->depth(0)->in($perimetersPath))
             ->map(fn ($file) => $file->getBasename('.php'))
             ->sort()
             ->values()
@@ -93,9 +93,9 @@ class ControlMakeCommand extends BaseControlMakeCommand
     {
         $layer = $this->resolveLayer();
 
-        $modelPath = $layer->path . '/src/Models';
+        $modelPath = $layer->path.'/src/Models';
 
-        return (new Collection(Finder::create()->files()->depth(0)->in($modelPath)))
+        return new Collection(Finder::create()->files()->depth(0)->in($modelPath))
             ->map(fn ($file) => $file->getBasename('.php'))
             ->sort()
             ->values()
@@ -112,6 +112,6 @@ class ControlMakeCommand extends BaseControlMakeCommand
             return $model;
         }
 
-        return $rootNamespace . 'Models\\' . $model;
+        return $rootNamespace.'Models\\'.$model;
     }
 }

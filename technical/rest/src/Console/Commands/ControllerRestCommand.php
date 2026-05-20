@@ -2,6 +2,7 @@
 
 namespace Technical\Rest\Console\Commands;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -29,8 +30,8 @@ class ControllerRestCommand extends ControllerMakeCommand
     {
         // Bypass ModelMakeCommand::handle()'s interactive "additional components" prompt
         // by calling GeneratorCommand::handle() directly via grandparent scope binding.
-        $grandparentHandle = \Closure::bind(
-            fn() => parent::handle(),
+        $grandparentHandle = Closure::bind(
+            fn () => parent::handle(),
             $this,
             ControllerMakeCommand::class
         );
@@ -54,18 +55,18 @@ class ControllerRestCommand extends ControllerMakeCommand
         $layer = $this->resolveLayer();
         $layerNamespace = rtrim($layer->manifest->rootNamespace(), '\\');
 
-        $relative = Str::replaceFirst($layerNamespace . '\\Rest\\Controllers\\', '', $name);
+        $relative = Str::replaceFirst($layerNamespace.'\\Rest\\Controllers\\', '', $name);
 
-        return $layer->path . '/src/Rest/Controllers/' . str_replace('\\', '/', $relative) . '.php';
+        return $layer->path.'/src/Rest/Controllers/'.str_replace('\\', '/', $relative).'.php';
     }
 
     protected function possibleResources(): array
     {
         $layer = $this->resolveLayer();
 
-        $resourcePath = $layer->path . '/src/Rest/Resources';
+        $resourcePath = $layer->path.'/src/Rest/Resources';
 
-        return (new Collection(Finder::create()->files()->depth(0)->in($resourcePath)))
+        return new Collection(Finder::create()->files()->depth(0)->in($resourcePath))
             ->map(fn ($file) => $file->getBasename('.php'))
             ->sort()
             ->values()
@@ -83,10 +84,6 @@ class ControllerRestCommand extends ControllerMakeCommand
 
     /**
      * Qualify the given resource class base name.
-     *
-     * @param string $resource
-     *
-     * @return string
      */
     protected function qualifyResource(string $resource): string
     {

@@ -50,15 +50,15 @@ class UserFactory extends Factory
 
     public function withoutManager(): static
     {
-        return $this->state(fn(array $attributes) => [
-            'manager_id' => null
+        return $this->state(fn (array $attributes) => [
+            'manager_id' => null,
         ]);
     }
 
     public function language(string $language): static
     {
-        return $this->state(fn(array $attributes) => [
-            'language' => $language
+        return $this->state(fn (array $attributes) => [
+            'language' => $language,
         ]);
     }
 }

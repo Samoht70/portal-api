@@ -21,14 +21,14 @@ trait ChoosesPerimetersLayer
 
         $chosen = search(
             label: 'Which layer should this be generated in?',
-            options: fn(string $value) => $layers
-                ->filter(fn(Layer $l) => str_contains($l->manifest->name(), $value))
-                ->mapWithKeys(fn(Layer $l) => [$l->manifest->name() => $l->manifest->name()])
+            options: fn (string $value) => $layers
+                ->filter(fn (Layer $l) => str_contains($l->manifest->name(), $value))
+                ->mapWithKeys(fn (Layer $l) => [$l->manifest->name() => $l->manifest->name()])
                 ->all(),
         );
 
         /** @var Layer $layer */
-        $layer = $layers->first(fn(Layer $l) => $l->manifest->name() === $chosen);
+        $layer = $layers->first(fn (Layer $l) => $l->manifest->name() === $chosen);
 
         return $this->resolvedPerimetersLayer = $layer;
     }

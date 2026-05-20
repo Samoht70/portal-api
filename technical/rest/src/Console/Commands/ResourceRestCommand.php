@@ -2,6 +2,7 @@
 
 namespace Technical\Rest\Console\Commands;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Lomkit\Rest\Console\Commands\ResourceMakeCommand;
@@ -25,8 +26,8 @@ class ResourceRestCommand extends ResourceMakeCommand
     {
         // Bypass ModelMakeCommand::handle()'s interactive "additional components" prompt
         // by calling GeneratorCommand::handle() directly via grandparent scope binding.
-        $grandparentHandle = \Closure::bind(
-            fn() => parent::handle(),
+        $grandparentHandle = Closure::bind(
+            fn () => parent::handle(),
             $this,
             ResourceMakeCommand::class
         );
@@ -50,18 +51,18 @@ class ResourceRestCommand extends ResourceMakeCommand
         $layer = $this->resolveLayer();
         $layerNamespace = rtrim($layer->manifest->rootNamespace(), '\\');
 
-        $relative = Str::replaceFirst($layerNamespace . '\\Rest\\Resources\\', '', $name);
+        $relative = Str::replaceFirst($layerNamespace.'\\Rest\\Resources\\', '', $name);
 
-        return $layer->path . '/src/Rest/Resources/' . str_replace('\\', '/', $relative) . '.php';
+        return $layer->path.'/src/Rest/Resources/'.str_replace('\\', '/', $relative).'.php';
     }
 
     protected function findAvailableModels()
     {
         $layer = $this->resolveLayer();
 
-        $modelPath = $layer->path . '/src/Models';
+        $modelPath = $layer->path.'/src/Models';
 
-        return (new Collection(Finder::create()->files()->depth(0)->in($modelPath)))
+        return new Collection(Finder::create()->files()->depth(0)->in($modelPath))
             ->map(fn ($file) => $file->getBasename('.php'))
             ->sort()
             ->values()
@@ -78,6 +79,6 @@ class ResourceRestCommand extends ResourceMakeCommand
             return $model;
         }
 
-        return $rootNamespace . 'Models\\' . $model;
+        return $rootNamespace.'Models\\'.$model;
     }
 }
