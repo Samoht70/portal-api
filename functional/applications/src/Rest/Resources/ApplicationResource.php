@@ -23,8 +23,6 @@ class ApplicationResource extends Resource
 
     /**
      * The exposed fields that could be provided
-     * @param RestRequest $request
-     * @return array
      */
     public function fields(RestRequest $request): array
     {
@@ -35,8 +33,6 @@ class ApplicationResource extends Resource
 
     /**
      * The exposed relations that could be provided
-     * @param RestRequest $request
-     * @return array
      */
     public function relations(RestRequest $request): array
     {
@@ -52,8 +48,6 @@ class ApplicationResource extends Resource
 
     /**
      * The exposed scopes that could be provided
-     * @param RestRequest $request
-     * @return array
      */
     public function scopes(RestRequest $request): array
     {
@@ -62,33 +56,29 @@ class ApplicationResource extends Resource
 
     /**
      * The exposed limits that could be provided
-     * @param RestRequest $request
-     * @return array
      */
     public function limits(RestRequest $request): array
     {
         return [
             10,
             25,
-            50
+            50,
         ];
     }
 
     /**
      * The actions that should be linked
-     * @param RestRequest $request
-     * @return array
      */
-    public function actions(RestRequest $request): array {
+    public function actions(RestRequest $request): array
+    {
         return [];
     }
 
     /**
      * The instructions that should be linked
-     * @param RestRequest $request
-     * @return array
      */
-    public function instructions(RestRequest $request): array {
+    public function instructions(RestRequest $request): array
+    {
         return [];
     }
 

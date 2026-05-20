@@ -24,7 +24,7 @@ class ApplicationRoleSeeder extends Seeder
             $application->roles()->sync(
                 collect($roles)
                     ->mapWithKeys(
-                        fn(RoleDefinition $role) => [$role->getKey() => ['is_default' => $role->slug === $defaultSlug]]
+                        fn (RoleDefinition $role) => [$role->getKey() => ['is_default' => $role->slug === $defaultSlug]]
                     )
             );
         }

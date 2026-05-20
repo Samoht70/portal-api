@@ -56,7 +56,7 @@ class PackSeeder extends Seeder
                     'nl' => ['name' => 'Auto Offerte'],
                 ],
                 'slug' => 'auto',
-            ]
+            ],
         ];
 
         foreach ($packsToCreate as $packToInsert) {

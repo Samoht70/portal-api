@@ -28,13 +28,13 @@ class ApplicationsServiceProvider extends LayerServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+            $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
             $this->loadSeeders([
                 PackSeeder::class,
                 EssentioSeeder::class,
                 ProductivitySeeder::class,
-//                AutoSeeder::class,
+                //                AutoSeeder::class,
             ], 1);
 
             $this->loadSeeders([
@@ -43,7 +43,7 @@ class ApplicationsServiceProvider extends LayerServiceProvider
             ], 2);
         }
 
-        $this->loadRoutesFrom(__DIR__ . '/../../routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
 
         $this->app->make(ControlRegistry::class)->push([
             PackControl::new(),

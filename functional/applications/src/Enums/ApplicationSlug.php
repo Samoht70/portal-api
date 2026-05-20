@@ -32,7 +32,7 @@ enum ApplicationSlug: string
         return match ($this) {
             self::Attendance, self::Survey, self::Carpooling => [
                 RoleDefinitionSlug::Admin,
-                RoleDefinitionSlug::Standard
+                RoleDefinitionSlug::Standard,
             ],
 
             self::BusinessCard, self::LeaveManagement, self::EmployeeGuide, self::ExpenseReports => [

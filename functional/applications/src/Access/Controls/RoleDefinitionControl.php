@@ -14,6 +14,7 @@ class RoleDefinitionControl extends Control
 {
     /**
      * The model the control refers to.
+     *
      * @var class-string<Model>
      */
     protected string $model = RoleDefinition::class;

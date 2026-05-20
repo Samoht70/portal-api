@@ -12,7 +12,7 @@ class ApplicationRole extends Pivot
     protected function casts(): array
     {
         return [
-            'is_default' => 'boolean'
+            'is_default' => 'boolean',
         ];
     }
 
