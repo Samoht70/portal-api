@@ -2,9 +2,6 @@
 
 namespace Technical\AccessControl\Console\Commands;
 
-use Illuminate\Console\Attributes\Description;
-use Illuminate\Console\Attributes\Signature;
-use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Lomkit\Access\Console\PerimeterMakeCommand as BasePerimeterMakeCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -25,12 +22,12 @@ class PerimeterMakeCommand extends BasePerimeterMakeCommand
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): ?bool
     {
         // Bypass PerimeterMakeCommand::handle()'s interactive "additional components" prompt
         // by calling GeneratorCommand::handle() directly via grandparent scope binding.
         $grandparentHandle = \Closure::bind(
-            fn() => parent::handle(),
+            fn () => parent::handle(),
             $this,
             BasePerimeterMakeCommand::class
         );
@@ -51,7 +48,7 @@ class PerimeterMakeCommand extends BasePerimeterMakeCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return rtrim($rootNamespace, '\\') . '\\Access\\Perimeters';
+        return rtrim($rootNamespace, '\\').'\\Access\\Perimeters';
     }
 
     protected function getPath($name): string
@@ -59,8 +56,8 @@ class PerimeterMakeCommand extends BasePerimeterMakeCommand
         $layer = $this->resolveLayer();
         $layerNamespace = rtrim($layer->manifest->rootNamespace(), '\\');
 
-        $relative = Str::replaceFirst($layerNamespace . '\\Access\\Perimeters\\', '', $name);
+        $relative = Str::replaceFirst($layerNamespace.'\\Access\\Perimeters\\', '', $name);
 
-        return $layer->path . '/src/Access/Perimeters/' . str_replace('\\', '/', $relative) . '.php';
+        return $layer->path.'/src/Access/Perimeters/'.str_replace('\\', '/', $relative).'.php';
     }
 }
