@@ -3,12 +3,15 @@
 namespace Functional\Applications\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
 #[Fillable(['application_id', 'role_definition_id', 'is_default'])]
-class ApplicationRole extends Pivot
+class ApplicationRole extends Model
 {
+    use HasUuids;
+
     protected function casts(): array
     {
         return [
@@ -21,8 +24,8 @@ class ApplicationRole extends Pivot
         return $this->belongsTo(Application::class);
     }
 
-    public function roleDefinition(): BelongsTo
+    public function definition(): BelongsTo
     {
-        return $this->belongsTo(RoleDefinition::class);
+        return $this->belongsTo(RoleDefinition::class, 'role_definition_id');
     }
 }

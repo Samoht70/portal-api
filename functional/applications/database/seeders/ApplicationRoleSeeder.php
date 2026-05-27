@@ -21,10 +21,10 @@ class ApplicationRoleSeeder extends Seeder
                 ->whereIn('slug', $applicationSlug->roles())
                 ->get(['id', 'slug']);
 
-            $application->roles()->sync(
+            $application->roles()->createMany(
                 collect($roles)
-                    ->mapWithKeys(
-                        fn (RoleDefinition $role) => [$role->getKey() => ['is_default' => $role->slug === $defaultSlug]]
+                    ->map(
+                        fn (RoleDefinition $role) => ['role_definition_id' => $role->getKey(), 'is_default' => $role->slug === $defaultSlug]
                     )
             );
         }
