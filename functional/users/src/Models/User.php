@@ -2,6 +2,7 @@
 
 namespace Functional\Users\Models;
 
+use Functional\Applications\Models\ApplicationRole;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -52,6 +54,15 @@ class User extends JwtUser implements HasLocalePreference, HasMedia
     public function directManaged(): HasMany
     {
         return $this->hasMany(User::class, 'manager_id');
+    }
+
+    public function applicationRoles(): BelongsToMany
+    {
+        return $this->belongsToMany(ApplicationRole::class, 'user_holds_application_roles')
+            ->using(UserHoldsApplicationRole::class)
+            ->withPivot('order')
+            ->orderByPivot('order')
+            ->withTimestamps();
     }
 
     public function registerMediaCollections(): void

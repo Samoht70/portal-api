@@ -33,10 +33,7 @@ class RoleDefinitionResource extends Resource
      */
     public function relations(RestRequest $request): array
     {
-        return [
-            BelongsToMany::make('applications', ApplicationResource::class)
-                ->withPivotFields(['is_default']),
-        ];
+        return [];
     }
 
     /**

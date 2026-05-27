@@ -2,13 +2,17 @@
 
 namespace Functional\Users\Rest\Resources;
 
+use Functional\Applications\Rest\Resources\ApplicationRoleResource;
 use Functional\Organizations\Rest\Resources\SiteResource;
 use Functional\Users\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Lomkit\Rest\Http\Requests\RestRequest;
 use Lomkit\Rest\Relations\BelongsTo;
+use Lomkit\Rest\Relations\BelongsToMany;
 use Lomkit\Rest\Relations\HasMany;
 use Lomkit\Rest\Relations\MorphMany;
+use Lomkit\Rest\Relations\MorphToMany;
+use Technical\AccessControl\Rest\Resources\RoleResource;
 use Technical\MediaLibrary\Rest\Resources\MediaResource;
 use Technical\Rest\Resource;
 
@@ -37,10 +41,20 @@ class UserResource extends Resource
     public function relations(RestRequest $request): array
     {
         return [
-            BelongsTo::make('site', SiteResource::class),
+            BelongsTo::make('site', SiteResource::class)
+                ->requiredOnCreation(),
+
             BelongsTo::make('directManager', UserResource::class),
+
             HasMany::make('directManaged', UserResource::class),
+
+            BelongsToMany::make('applicationRoles', ApplicationRoleResource::class)
+                ->withPivotFields(['order']),
+
             MorphMany::make('media', MediaResource::class),
+
+            MorphToMany::make('roles', RoleResource::class)
+                ->requiredOnCreation(),
         ];
     }
 

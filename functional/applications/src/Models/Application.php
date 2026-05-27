@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lomkit\Access\Controls\HasControl;
 
 #[UseFactory(ApplicationFactory::class)]
@@ -38,11 +38,8 @@ class Application extends Model implements TranslatableContract
         return $this->belongsTo(Pack::class);
     }
 
-    public function roles(): BelongsToMany
+    public function roles(): HasMany
     {
-        return $this->belongsToMany(RoleDefinition::class, 'application_roles')
-            ->using(ApplicationRole::class)
-            ->withPivot(['is_default'])
-            ->withTimestamps();
+        return $this->hasMany(ApplicationRole::class);
     }
 }

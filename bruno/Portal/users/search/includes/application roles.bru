@@ -1,0 +1,36 @@
+meta {
+  name: application roles
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{action}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "search": {
+      "includes": [
+        {
+          "relation": "applicationRoles",
+          "includes": [
+            {
+              "relation": "definition"
+            },
+            {
+              "relation": "application"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

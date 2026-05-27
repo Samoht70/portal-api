@@ -1,0 +1,40 @@
+meta {
+  name: applications
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{action}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "mutate": [
+      {
+        "operation": "update",
+        "key": "019e69c3-a58e-720c-b7a7-a35d79ad0545",
+        "relations": {
+          "applicationRoles": [
+            {
+              "operation": "sync",
+              "key": [
+                "019e69c3-75a6-730d-9b4e-d62a1875e248"
+              ],
+              "pivot": {
+                "order": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
