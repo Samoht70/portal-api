@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf7e69b417b8a176ba0eeff8bed94eac",
+    "content-hash": "e632c8602562c2af0544476ff9079e69",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -296,6 +296,34 @@
                 }
             ],
             "time": "2025-08-20T19:15:30+00:00"
+        },
+        {
+            "name": "dailyapps/sync-relay",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./dailyapps/sync-relay",
+                "reference": "8a5b3bd426e581ed742222f48143dbf5b959be85"
+            },
+            "require": {
+                "xefi/laravel-osdd": "*"
+            },
+            "type": "layer",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dailyapps\\SyncRelay\\Providers\\SyncRelayServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dailyapps\\SyncRelay\\": "src/"
+                }
+            },
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "dedoc/scramble",

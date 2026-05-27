@@ -3,6 +3,8 @@
 namespace Functional\Users\Models;
 
 use Functional\Applications\Models\ApplicationRole;
+use Dailyapps\SyncRelay\Concerns\HasSync;
+use Dailyapps\SyncRelay\Contracts\Syncable;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -25,9 +27,9 @@ use Technical\Authentication\Models\JwtUser;
 #[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
 #[Hidden(['password'])]
 #[UseFactory(UserFactory::class)]
-class User extends JwtUser implements HasLocalePreference, HasMedia
+class User extends JwtUser implements HasLocalePreference, HasMedia, Syncable
 {
-    use HasControl, HasFactory, HasRoles, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes;
+    use HasControl, HasFactory, HasRoles, HasSync, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -76,5 +78,10 @@ class User extends JwtUser implements HasLocalePreference, HasMedia
     public function preferredLocale(): string
     {
         return $this->language;
+    }
+
+    public function syncWith(): array
+    {
+        return ['roles'];
     }
 }
