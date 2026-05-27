@@ -24,6 +24,8 @@
         "technical/documentation": "*",
         "technical/authentication": "*",
         "functional/organizations": "*",
+        "technical/translations": "*",
+        "functional/applications": "*",
         "dailyapps/sync-relay": "*"
     },
     "require-dev": {

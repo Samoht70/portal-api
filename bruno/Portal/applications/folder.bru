@@ -1,0 +1,16 @@
+meta {
+  name: applications
+  seq: 1
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+vars:pre-request {
+  resource: applications
+}

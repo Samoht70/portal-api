@@ -3,11 +3,13 @@
 namespace Functional\Organizations\Access\Controls;
 
 use Functional\Organizations\Models\Site;
+use Functional\Users\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lomkit\Access\Controls\Control;
 use Lomkit\Access\Perimeters\Perimeter;
 use Technical\AccessControl\Access\Perimeters\ClientPerimeter;
+use Technical\AccessControl\Access\Perimeters\GlobalPerimeter;
 use Technical\AccessControl\Access\Perimeters\OwnPerimeter;
 
 class SiteControl extends Control
@@ -27,25 +29,36 @@ class SiteControl extends Control
     protected function perimeters(): array
     {
         return [
+            GlobalPerimeter::new()
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s global %s', $method, (new $this->model)->getTable()));
+                })
+                ->should(function (Model&User $user, Site $site) {
+                    return true;
+                })
+                ->query(function (Builder $query, Model&User $user) {
+                    return $query;
+                }),
+
             ClientPerimeter::new()
-                ->allowed(function (Model $user, string $method) {
-                    return $user->can(sprintf('%s client sites', $method));
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s client %s', $method, (new $this->model)->getTable()));
                 })
-                ->should(function (Model $user, Site $model) {
-                    return $model->client_id === $user->site->client_id;
+                ->should(function (Model&User $user, Site $site) {
+                    return $site->client()->is($user->site->client);
                 })
-                ->query(function (Builder $query, Model $user) {
-                    return $query->where('client_id', $user->site->client_id);
+                ->query(function (Builder $query, Model&User $user) {
+                    return $query->whereBelongsTo($user->site->client);
                 }),
 
             OwnPerimeter::new()
-                ->allowed(function (Model $user, string $method) {
-                    return $user->can(sprintf('%s own sites', $method));
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s own %s', $method, (new $this->model)->getTable()));
                 })
-                ->should(function (Model $user, Site $model) {
-                    return $model->getKey() === $user->site_id;
+                ->should(function (Model&User $user, Site $site) {
+                    return $site->is($user->site);
                 })
-                ->query(function (Builder $query, Model $user) {
+                ->query(function (Builder $query, Model&User $user) {
                     return $query->whereKey($user->site_id);
                 }),
         ];

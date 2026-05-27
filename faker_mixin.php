@@ -34,6 +34,7 @@ namespace Xefi\Faker\Container;
  * @method string sdl()
  * @method string tld()
  * @method string domain()
+ * @method string ip()
  * @method string ipv4()
  * @method string ipv6()
  * @method mixed macAddress()

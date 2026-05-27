@@ -24,7 +24,7 @@ class OrganizationsServiceProvider extends LayerServiceProvider
             $this->loadSeeders([
                 ClientSeeder::class,
                 SiteSeeder::class,
-            ], 1);
+            ], 2);
         }
 
         $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
