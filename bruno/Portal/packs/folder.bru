@@ -1,0 +1,16 @@
+meta {
+  name: packs
+  seq: 5
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+vars:pre-request {
+  resource: packs
+}

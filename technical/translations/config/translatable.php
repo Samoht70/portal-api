@@ -98,7 +98,7 @@ return [
     | set this to 'App\Translations'.
     |
     */
-    'translation_model_namespace' => null,
+    'translation_model_namespace' => 'Technical\\Translations\\Models',
 
     /*
     |--------------------------------------------------------------------------
@@ -132,7 +132,7 @@ return [
     | translations relationship is already loaded.
     |
      */
-    'to_array_always_loads_translations' => true,
+    'to_array_always_loads_translations' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -159,5 +159,5 @@ return [
     | a separate model's property, just set it here.
     |
      */
-    'translations_wrapper' => null,
+    'translations_wrapper' => 'translations',
 ];

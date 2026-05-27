@@ -3,10 +3,12 @@
 namespace Functional\Organizations\Access\Controls;
 
 use Functional\Organizations\Models\Client;
+use Functional\Users\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Lomkit\Access\Controls\Control;
 use Lomkit\Access\Perimeters\Perimeter;
+use Technical\AccessControl\Access\Perimeters\GlobalPerimeter;
 use Technical\AccessControl\Access\Perimeters\OwnPerimeter;
 
 class ClientControl extends Control
@@ -26,15 +28,30 @@ class ClientControl extends Control
     protected function perimeters(): array
     {
         return [
+            GlobalPerimeter::new()
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s global %s', $method, (new $this->model)->getTable()));
+                })
+                ->should(function (Model&User $user, Client $client) {
+                    return true;
+                })
+                ->query(function (Builder $query, Model&User $user) {
+                    return $query;
+                }),
+
             OwnPerimeter::new()
-                ->allowed(function (Model $user, string $method) {
-                    return $user->can(sprintf('%s own clients', $method));
+                ->allowed(function (Model&User $user, string $method) {
+                    return $user->can(sprintf('%s own %s', $method, (new $this->model)->getTable()));
                 })
-                ->should(function (Model $user, Client $model) {
-                    return $model->users()->whereKey($user)->exists();
+                ->should(function (Model&User $user, Client $client) {
+                    return $client
+                        ->users()
+                        ->whereKey($user)
+                        ->exists();
                 })
-                ->query(function (Builder $query, Model $user) {
-                    return $query->whereKey($user->site->client_id);
+                ->query(function (Builder $query, Model&User $user) {
+                    return $query
+                        ->whereKey($user->site->client_id);
                 }),
         ];
     }

@@ -8,6 +8,8 @@
   ],
   "presets": {
     "requestType": "http",
-    "requestUrl": "{{API_URL}}/{{resource}}/{{path}}"
-  }
+    "requestUrl": "{{API_URL}}/{{resource}}/{{action}}"
+  },
+  "size": 0.0019741058349609375,
+  "filesCount": 10
 }

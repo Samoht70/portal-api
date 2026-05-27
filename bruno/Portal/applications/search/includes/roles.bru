@@ -1,0 +1,28 @@
+meta {
+  name: roles
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{action}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "search": {
+      "includes": [
+        {
+          "relation": "roles"
+        }
+      ]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
