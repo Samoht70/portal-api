@@ -14,12 +14,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('application_roles', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->foreignIdFor(Application::class)->constrained();
             $table->foreignIdFor(RoleDefinition::class)->constrained();
             $table->boolean('is_default')->default(false);
             $table->timestamps();
-
-            $table->primary(['application_id', 'role_definition_id']);
         });
     }
 
