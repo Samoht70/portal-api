@@ -1,6 +1,8 @@
 # Only the app container lives here. All backing services (mysql, redis,
 # meilisearch, rustfs, mailpit) come from the shared root stack and are
 # reached over the external "dailyapps" network. Start the root stack first.
+# Served at http://portal-api.localhost by the shared Traefik ingress (no host
+# port published for HTTP — Traefik reaches port 80 over the network).
 services:
     app:
         container_name: portal-api
@@ -13,13 +15,16 @@ services:
         image: 'dailyapps/php:8.5'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        # API only — no host ports. Reached over the network by Traefik.
         volumes:
             - '.:/var/www/html'
         networks:
             - dailyapps
+        labels:
+            - 'traefik.enable=true'
+            - 'traefik.http.routers.portal-api.rule=Host(`portal-api.localhost`)'
+            - 'traefik.http.routers.portal-api.entrypoints=web'
+            - 'traefik.http.services.portal-api.loadbalancer.server.port=80'
 
 networks:
     dailyapps:
