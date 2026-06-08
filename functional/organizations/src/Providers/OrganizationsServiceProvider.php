@@ -27,21 +27,36 @@ class OrganizationsServiceProvider extends LayerServiceProvider
             ], 2);
         }
 
-        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
+        $this->bootRouting();
+        $this->registerPolicies();
+        $this->registerControls();
+    }
 
-        $this->app->make(ControlRegistry::class)->push([
-            ClientControl::new(),
-            SiteControl::new(),
-        ]);
+    public function register(): void
+    {
+        //
+    }
 
+    private function bootRouting(): void
+    {
+        $this->withRouting(
+            api: __DIR__ . '/../../routes/api.php',
+        );
+    }
+
+    private function registerPolicies(): void
+    {
         $this->app->make(GateRegistry::class)->push([
             Client::class => ClientPolicy::class,
             Site::class => SitePolicy::class,
         ]);
     }
 
-    public function register(): void
+    private function registerControls(): void
     {
-        //
+        $this->app->make(ControlRegistry::class)->push([
+            ClientControl::new(),
+            SiteControl::new(),
+        ]);
     }
 }

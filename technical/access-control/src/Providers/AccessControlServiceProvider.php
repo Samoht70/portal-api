@@ -26,20 +26,13 @@ class AccessControlServiceProvider extends LayerServiceProvider
             ], 0);
         }
 
-        $this->overrideConfigFrom(__DIR__.'/../../config/permission.php', 'permission');
-
-        $this->app->make(ControlRegistry::class)->push([
-            RoleControl::new(),
-        ]);
-
-        $this->app->make(GateRegistry::class)->push([
-            Role::class => RolePolicy::class,
-        ]);
+        $this->registerPolicies();
+        $this->registerControls();
     }
 
     public function register(): void
     {
-        //
+        $this->overrideConfigFrom(__DIR__.'/../../config/permission.php', 'permission');
     }
 
     private function registerCommands(): void
@@ -47,6 +40,20 @@ class AccessControlServiceProvider extends LayerServiceProvider
         $this->commands([
             ControlMakeCommand::class,
             PerimeterMakeCommand::class,
+        ]);
+    }
+
+    private function registerPolicies(): void
+    {
+        $this->app->make(GateRegistry::class)->push([
+            Role::class => RolePolicy::class,
+        ]);
+    }
+
+    private function registerControls(): void
+    {
+        $this->app->make(ControlRegistry::class)->push([
+            RoleControl::new(),
         ]);
     }
 }

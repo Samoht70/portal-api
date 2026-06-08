@@ -22,19 +22,34 @@ class UsersServiceProvider extends LayerServiceProvider
             ], 3);
         }
 
-        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
-
-        $this->app->make(ControlRegistry::class)->push([
-            UserControl::new(),
-        ]);
-
-        $this->app->make(GateRegistry::class)->push([
-            User::class => UserPolicy::class,
-        ]);
+        $this->bootRouting();
+        $this->registerPolicies();
+        $this->registerControls();
     }
 
     public function register(): void
     {
         //
+    }
+
+    private function bootRouting(): void
+    {
+        $this->withRouting(
+            api: __DIR__ . '/../../routes/api.php',
+        );
+    }
+
+    private function registerPolicies(): void
+    {
+        $this->app->make(GateRegistry::class)->push([
+            User::class => UserPolicy::class,
+        ]);
+    }
+
+    private function registerControls(): void
+    {
+        $this->app->make(ControlRegistry::class)->push([
+            UserControl::new(),
+        ]);
     }
 }

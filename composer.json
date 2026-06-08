@@ -20,7 +20,7 @@
         "technical/rest": "*",
         "technical/telescope": "*",
         "technical/xefi-faker": "*",
-        "xefi/laravel-osdd": "^1.2",
+        "xefi/laravel-osdd": "^2.0",
         "technical/documentation": "*",
         "technical/authentication": "*",
         "functional/organizations": "*",

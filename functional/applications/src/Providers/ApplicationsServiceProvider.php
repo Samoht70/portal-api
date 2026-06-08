@@ -43,20 +43,9 @@ class ApplicationsServiceProvider extends LayerServiceProvider
             ], 2);
         }
 
-        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
-
-        $this->app->make(ControlRegistry::class)->push([
-            PackControl::new(),
-            ApplicationControl::new(),
-            RoleDefinitionControl::new(),
-        ]);
-
-        $this->app->make(GateRegistry::class)->push([
-            Pack::class => PackPolicy::class,
-            Application::class => ApplicationPolicy::class,
-            RoleDefinition::class => RoleDefinitionPolicy::class,
-            ApplicationRole::class => ApplicationRolePolicy::class,
-        ]);
+        $this->bootRouting();
+        $this->registerPolicies();
+        $this->registerControls();
 
         Pack::enableDeleteTranslationsCascade();
         Application::enableDeleteTranslationsCascade();
@@ -65,5 +54,31 @@ class ApplicationsServiceProvider extends LayerServiceProvider
     public function register(): void
     {
         //
+    }
+
+    private function bootRouting(): void
+    {
+        $this->withRouting(
+            api: __DIR__ . '/../../routes/api.php',
+        );
+    }
+
+    private function registerPolicies(): void
+    {
+        $this->app->make(GateRegistry::class)->push([
+            Pack::class => PackPolicy::class,
+            Application::class => ApplicationPolicy::class,
+            RoleDefinition::class => RoleDefinitionPolicy::class,
+            ApplicationRole::class => ApplicationRolePolicy::class,
+        ]);
+    }
+
+    private function registerControls(): void
+    {
+        $this->app->make(ControlRegistry::class)->push([
+            PackControl::new(),
+            ApplicationControl::new(),
+            RoleDefinitionControl::new(),
+        ]);
     }
 }

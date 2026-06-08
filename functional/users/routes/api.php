@@ -2,8 +2,7 @@
 
 use Functional\Users\Rest\Controllers\UsersController;
 
-Route::prefix('api')
-    ->middleware(['auth', 'api'])
+Route::middleware(['auth', 'api'])
     ->group(function () {
         Rest::resource('users', UsersController::class);
     });

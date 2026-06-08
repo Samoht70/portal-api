@@ -3,8 +3,7 @@
 use Functional\Applications\Rest\Controllers\ApplicationsController;
 use Functional\Applications\Rest\Controllers\PacksController;
 
-Route::prefix('api')
-    ->middleware(['auth:api'])
+Route::middleware(['auth:api'])
     ->group(function () {
         Rest::resource('packs', PacksController::class)
             ->only(['details', 'search']);

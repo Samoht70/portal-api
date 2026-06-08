@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c21f0665a2ef1762a37a5744abb0551e",
+    "content-hash": "0c1df0fb639697b13d2fb99c1ea75326",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -10865,16 +10865,16 @@
         },
         {
             "name": "xefi/laravel-osdd",
-            "version": "v1.2.1",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/xefi/laravel-osdd.git",
-                "reference": "02c03b79212afe95e56ac13045e01529c1b939e7"
+                "reference": "df629a2f10d253095390b4545d3fb056869d27c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/xefi/laravel-osdd/zipball/02c03b79212afe95e56ac13045e01529c1b939e7",
-                "reference": "02c03b79212afe95e56ac13045e01529c1b939e7",
+                "url": "https://api.github.com/repos/xefi/laravel-osdd/zipball/df629a2f10d253095390b4545d3fb056869d27c1",
+                "reference": "df629a2f10d253095390b4545d3fb056869d27c1",
                 "shasum": ""
             },
             "require": {
@@ -10911,9 +10911,9 @@
             "description": "Package to handle OSDD in a Laravel application.",
             "support": {
                 "issues": "https://github.com/xefi/laravel-osdd/issues",
-                "source": "https://github.com/xefi/laravel-osdd/tree/v1.2.1"
+                "source": "https://github.com/xefi/laravel-osdd/tree/v2.0.0"
             },
-            "time": "2026-05-20T14:39:07+00:00"
+            "time": "2026-06-01T16:37:48+00:00"
         }
     ],
     "packages-dev": [

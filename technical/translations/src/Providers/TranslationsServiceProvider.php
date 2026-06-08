@@ -11,13 +11,11 @@ class TranslationsServiceProvider extends LayerServiceProvider
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
         }
-
-        $this->overrideConfigFrom(__DIR__.'/../../config/translatable.php', 'translatable');
     }
 
     public function register(): void
     {
-        //
+        $this->overrideConfigFrom(__DIR__.'/../../config/translatable.php', 'translatable');
     }
 
     protected function overrideConfigFrom(string $path, string $key): void

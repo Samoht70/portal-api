@@ -11,12 +11,10 @@ class OsddServiceProvider extends LayerServiceProvider
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
         }
-
-        $this->overrideConfigFrom(__DIR__.'/../../config/osdd.php', 'osdd');
     }
 
     public function register(): void
     {
-        //
+        $this->overrideConfigFrom(__DIR__.'/../../config/osdd.php', 'osdd');
     }
 }
