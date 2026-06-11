@@ -1,14 +1,22 @@
 {
     "name": "technical/authentication",
-    "description": "",
+    "description": "First-party identity: credential login, email verification, two-factor authentication (Fortify) and Microsoft (Azure AD) login. Issues stateless access tokens.",
     "type": "layer",
     "version": "1.0.0",
     "require": {
-        "xefi/laravel-osdd": "*"
+        "xefi/laravel-osdd": "*",
+        "laravel/fortify": "^1.30",
+        "laravel/socialite": "^5.27",
+        "socialiteproviders/microsoft": "^4.9"
     },
     "autoload": {
         "psr-4": {
             "Technical\\Authentication\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Technical\\Authentication\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable",

@@ -1,4 +1,7 @@
-<?php namespace Xefi\Faker\Container;
+<?php
+
+namespace Xefi\Faker\Container;
+
 /**
  * @method string copySampleBackgroundToPath(string $path)
  * @method string copySampleImageToPath(string $path)
@@ -103,4 +106,4 @@
  * @method string company()
  * @method string nir(?string $gender = null, bool $formatted = false)
  */
-	class Container{}
+class Container {}

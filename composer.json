@@ -23,6 +23,7 @@
         "xefi/laravel-osdd": "^2.0",
         "technical/documentation": "*",
         "technical/authentication": "*",
+        "technical/oauth-server": "*",
         "functional/organizations": "*",
         "technical/translations": "*",
         "functional/applications": "*"
@@ -83,7 +84,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/passport"
+            ]
         }
     },
     "config": {
