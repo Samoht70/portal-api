@@ -7,7 +7,7 @@ services:
     app:
         container_name: portal-api
         build:
-            context: '../docker/php'
+            context: '../../docker/php'
             dockerfile: Dockerfile
             args:
                 WWWUSER: '${WWWUSER:-1000}'
