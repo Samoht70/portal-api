@@ -1,0 +1,25 @@
+{
+    "name": "technical/oauth-server",
+    "description": "OAuth2 / OpenID Connect authorization server for external child applications (SSO provider).",
+    "type": "layer",
+    "version": "1.0.0",
+    "require": {
+        "xefi/laravel-osdd": "*",
+        "laravel/passport": "^13.0",
+        "jeremy379/laravel-openid-connect": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Technical\\OauthServer\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Technical\\OauthServer\\Providers\\OauthServerServiceProvider"
+            ]
+        }
+    }
+}
