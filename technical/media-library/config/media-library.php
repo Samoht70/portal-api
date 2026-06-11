@@ -24,7 +24,6 @@ use Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer;
 use Spatie\MediaLibrary\Support\FileRemover\DefaultFileRemover;
 use Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
-use Spatie\MediaLibraryPro\Models\TemporaryUpload;
 
 return [
 
@@ -79,13 +78,6 @@ return [
      * Keep this option disabled if using Media Library Pro components (https://medialibrary.pro)
      */
     'use_default_collection_serialization' => false,
-
-    /*
-     * The fully qualified class name of the model used for temporary uploads.
-     *
-     * This model is only used in Media Library Pro (https://medialibrary.pro)
-     */
-    'temporary_upload_model' => TemporaryUpload::class,
 
     /*
      * When enabled, Media Library Pro will only process temporary uploads that were uploaded
