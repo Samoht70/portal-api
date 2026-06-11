@@ -56,9 +56,13 @@ class OauthServerServiceProvider extends LayerServiceProvider
 
     private function configurePassport(): void
     {
-        // Advertise the OIDC + profile scopes to child applications.
+        // Advertise the OIDC + profile scopes to child applications. OAuthScope
+        // is the single source of truth: it feeds both Passport's scope registry
+        // and the OIDC discovery document (overriding the package default, which
+        // otherwise advertises unsupported phone/address scopes).
         Passport::tokensCan(OAuthScope::registry());
         Passport::setDefaultScope([OAuthScope::OpenId->value]);
+        config(['openid.passport.tokens_can' => OAuthScope::registry()]);
 
         // Short-lived access tokens, longer-lived refresh tokens. Child apps
         // refresh via the refresh_token grant rather than re-prompting the user.

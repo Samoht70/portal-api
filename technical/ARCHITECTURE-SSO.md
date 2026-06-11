@@ -162,6 +162,9 @@ php artisan migrate                   # users columns + oauth_* + fortify/passpo
 # first-party SPA client (Authorization Code + PKCE) → set PASSPORT_SPA_CLIENT_ID
 php artisan passport:client --public
 
+# personal access client — required by first-party login token issuance (createToken)
+php artisan passport:client --personal
+
 # Azure AD app registration → MICROSOFT_CLIENT_ID / SECRET / REDIRECT_URI
 ```
 

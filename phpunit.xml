@@ -7,6 +7,12 @@
     <testsuite name="Feature">
       <directory>tests/Feature</directory>
     </testsuite>
+    <testsuite name="technical/authentication">
+      <directory>technical/authentication/tests</directory>
+    </testsuite>
+    <testsuite name="technical/oauth-server">
+      <directory>technical/oauth-server/tests</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>
@@ -22,7 +28,7 @@
     <env name="BCRYPT_ROUNDS" value="4"/>
     <env name="BROADCAST_CONNECTION" value="null"/>
     <env name="CACHE_STORE" value="array"/>
-    <env name="DB_DATABASE" value="testing"/>
+    <env name="DB_DATABASE" value="portal_api_test"/>
     <env name="DB_URL" value=""/>
     <env name="MAIL_MAILER" value="array"/>
     <env name="QUEUE_CONNECTION" value="sync"/>

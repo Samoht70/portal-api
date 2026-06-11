@@ -13,6 +13,11 @@
             "Technical\\OauthServer\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Technical\\OauthServer\\Tests\\": "tests/"
+        }
+    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "extra": {

@@ -3,7 +3,9 @@
 namespace Technical\Authentication\Providers;
 
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\URL;
 use Laravel\Fortify\Fortify;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use SocialiteProviders\Microsoft\Provider;
@@ -16,6 +18,7 @@ class AuthenticationServiceProvider extends LayerServiceProvider
         $this->bootRouting();
         $this->registerMicrosoftProvider();
         $this->configurePasswordReset();
+        $this->configureEmailVerification();
     }
 
     public function register(): void
@@ -55,6 +58,18 @@ class AuthenticationServiceProvider extends LayerServiceProvider
             $email = urlencode($notifiable->getEmailForPasswordReset());
 
             return "$base/reset-password?token={$token}&email={$email}";
+        });
+    }
+
+    private function configureEmailVerification(): void
+    {
+        // The verify route is model-bound on {user}, so the signed URL must
+        // carry a `user` parameter (Laravel's default notification emits `id`).
+        VerifyEmail::createUrlUsing(function ($notifiable): string {
+            return URL::temporarySignedRoute('verification.verify', now()->addMinutes(60), [
+                'user' => $notifiable->getKey(),
+                'hash' => sha1($notifiable->getEmailForVerification()),
+            ]);
         });
     }
 }
