@@ -4,9 +4,9 @@ namespace Technical\Authentication\Http\Controllers;
 
 use Functional\Users\Models\User;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Technical\Authentication\Actions\AuthenticateMicrosoftUser;
 use Technical\Authentication\Actions\IssueAccessToken;
 use Technical\Authentication\Enums\AuthErrorCode;
@@ -26,11 +26,9 @@ class MicrosoftController extends Controller
 {
     public function __construct(
         private readonly AuthenticateMicrosoftUser $authenticateMicrosoftUser,
-        private readonly IssueAccessToken          $issueAccessToken,
-        private readonly TwoFactorPendingToken     $pendingToken,
-    )
-    {
-    }
+        private readonly IssueAccessToken $issueAccessToken,
+        private readonly TwoFactorPendingToken $pendingToken,
+    ) {}
 
     public function redirect(): JsonResponse
     {

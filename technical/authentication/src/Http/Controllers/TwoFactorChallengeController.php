@@ -4,9 +4,9 @@ namespace Technical\Authentication\Http\Controllers;
 
 use Functional\Users\Models\User;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Illuminate\Routing\Controller;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Technical\Authentication\Actions\IssueAccessToken;
 use Technical\Authentication\Enums\AuthErrorCode;
 use Technical\Authentication\Http\Requests\TwoFactorChallengeRequest;

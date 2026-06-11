@@ -24,12 +24,10 @@ use Technical\Authentication\Support\TwoFactorPendingToken;
 class LoginController extends Controller
 {
     public function __construct(
-        private readonly AttemptCredentials    $attemptCredentials,
-        private readonly IssueAccessToken      $issueAccessToken,
+        private readonly AttemptCredentials $attemptCredentials,
+        private readonly IssueAccessToken $issueAccessToken,
         private readonly TwoFactorPendingToken $pendingToken,
-    )
-    {
-    }
+    ) {}
 
     public function login(LoginRequest $request): JsonResponse
     {
@@ -46,7 +44,7 @@ class LoginController extends Controller
             );
         }
 
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $user->sendEmailVerificationNotification();
 
             return response()->json(

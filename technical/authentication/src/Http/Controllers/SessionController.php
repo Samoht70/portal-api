@@ -5,7 +5,6 @@ namespace Technical\Authentication\Http\Controllers;
 use Functional\Users\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 

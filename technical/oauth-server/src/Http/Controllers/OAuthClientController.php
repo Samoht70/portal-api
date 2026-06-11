@@ -48,7 +48,7 @@ class OAuthClientController extends Controller
         $model = $user->oauthApps()->find($client);
 
         if ($model === null) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $model->delete();

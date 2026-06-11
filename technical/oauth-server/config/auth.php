@@ -1,5 +1,7 @@
 <?php
 
+use Functional\Users\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | Authentication configuration — STATELESS
@@ -33,7 +35,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', \Functional\Users\Models\User::class),
+            'model' => env('AUTH_MODEL', User::class),
         ],
     ],
 

@@ -5,10 +5,10 @@ namespace Technical\Authentication\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Stateless password reset. `forgot` e-mails a reset link pointing at the

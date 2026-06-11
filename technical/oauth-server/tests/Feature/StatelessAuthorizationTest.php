@@ -32,8 +32,8 @@ class StatelessAuthorizationTest extends TestCase
         $verifier = 'a-pkce-code-verifier-of-sufficient-length-0123456789';
         $challenge = hash('sha256', $verifier, true)
                 |> base64_encode(...)
-                |> (fn($x) => strtr($x, '+/', '-_'))
-                |> (fn($x) => rtrim($x, '='));
+                |> (fn ($x) => strtr($x, '+/', '-_'))
+                |> (fn ($x) => rtrim($x, '='));
 
         $query = http_build_query([
             'client_id' => $client->getKey(),

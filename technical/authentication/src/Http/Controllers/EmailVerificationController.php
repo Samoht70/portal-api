@@ -5,7 +5,6 @@ namespace Technical\Authentication\Http\Controllers;
 use Functional\Users\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -23,22 +22,22 @@ class EmailVerificationController extends Controller
     {
         $email = $user->getEmailForVerification();
 
-        if (!$this->verifyEmail($email, $hash)) {
-            throw new NotFoundHttpException();
+        if (! $this->verifyEmail($email, $hash)) {
+            throw new NotFoundHttpException;
         }
 
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
         }
 
         return redirect()->away(
-            rtrim((string)config('app.frontend_url'), '/') . '/login?verified=1'
+            rtrim((string) config('app.frontend_url'), '/').'/login?verified=1'
         );
     }
 
     public function resend(#[CurrentUser] User $user): Response
     {
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $user->sendEmailVerificationNotification();
         }
 

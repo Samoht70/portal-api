@@ -79,7 +79,7 @@ class StatelessAuthorizationController extends Controller
             $authRequest->setUser(new UserEntity($user->getAuthIdentifier()));
             $authRequest->setAuthorizationApproved($request->boolean('approved', true));
 
-            $psrResponse = $this->server->completeAuthorizationRequest($authRequest, new PsrResponse());
+            $psrResponse = $this->server->completeAuthorizationRequest($authRequest, new PsrResponse);
         } catch (OAuthServerException $exception) {
             return $this->error($exception);
         }
