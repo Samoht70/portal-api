@@ -5,6 +5,7 @@ namespace Functional\Subscriptions\Tests\Feature;
 use Functional\Applications\Models\Application;
 use Functional\Organizations\Models\Client;
 use Functional\Subscriptions\Models\Subscription;
+use Functional\Subscriptions\Resolver\SubscriptionResolver;
 use Technical\EventDistribution\Contracts\SubscriberResolver;
 use Technical\EventDistribution\Values\Subscriber;
 use Tests\TestCase;
@@ -38,7 +39,7 @@ class SubscriberResolverTest extends TestCase
     public function test_binding_resolves_to_the_subscription_resolver(): void
     {
         $this->assertInstanceOf(
-            \Functional\Subscriptions\Resolver\SubscriptionResolver::class,
+            SubscriptionResolver::class,
             $this->resolver()
         );
     }

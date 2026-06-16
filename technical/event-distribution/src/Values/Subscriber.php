@@ -10,6 +10,5 @@ final readonly class Subscriber
 {
     public function __construct(
         public string $applicationId,
-    ) {
-    }
+    ) {}
 }

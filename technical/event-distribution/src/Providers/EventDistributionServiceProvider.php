@@ -12,11 +12,7 @@ use Xefi\LaravelOSDD\LayerServiceProvider;
  */
 class EventDistributionServiceProvider extends LayerServiceProvider
 {
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 }
