@@ -1,0 +1,46 @@
+meta {
+  name: show
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/oauth/authorize?client_id={{oauth_client_id}}&redirect_uri={{oauth_redirect_uri}}&response_type=code&scope=openid profile email&code_challenge={{pkce_challenge}}&code_challenge_method=S256&state={{oauth_state}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  client_id: {{oauth_client_id}}
+  redirect_uri: {{oauth_redirect_uri}}
+  response_type: code
+  scope: openid profile email
+  code_challenge: {{pkce_challenge}}
+  code_challenge_method: S256
+  state: {{oauth_state}}
+}
+
+script:pre-request {
+  const crypto = require('crypto');
+  // Generate a fresh PKCE pair + state for this authorization flow.
+  const verifier = crypto.randomBytes(48).toString('base64url');
+  const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
+  bru.setGlobalEnvVar('pkce_verifier', verifier);
+  bru.setGlobalEnvVar('pkce_challenge', challenge);
+  bru.setGlobalEnvVar('oauth_state', crypto.randomBytes(16).toString('hex'));
+}
+
+docs {
+  Stateless consent details (GET /api/oauth/authorize, auth:api). The SSO
+  front-end calls this with the user's first-party bearer token to read the
+  client name + requested scopes before rendering the consent screen.
+
+  The pre-request script mints the PKCE verifier/challenge and a state value into
+  global vars, reused by `approve` and `token`. Run `clients/store` first to
+  populate `oauth_client_id` / `oauth_redirect_uri`.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

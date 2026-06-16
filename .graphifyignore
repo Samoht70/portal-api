@@ -1,7 +1,45 @@
+# Dépendances
 vendor/
 node_modules/
+
+# Build & assets compilés
 public/build/
+public/hot
+public/storage
+
+# Caches & runtime
 storage/
 bootstrap/cache/
+.phpunit.result.cache
+.phpunit.cache/
+
+# Sortie graphify (racine + sous-dossiers, ex: bruno/Portal/graphify-out)
 graphify-out/
+**/graphify-out/
+
+# VCS
 .git/
+
+# Environnement & secrets
+.env
+.env.backup
+.env.production
+auth.json
+storage/*.key
+
+# Outils & IDE
+.phpactor.json
+.codex/
+.cursor/
+.idea/
+.nova/
+.vscode/
+.zed/
+_ide_helper.php
+Homestead.json
+Homestead.yaml
+
+# Divers
+*.log
+.DS_Store
+Thumbs.db

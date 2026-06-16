@@ -1,0 +1,21 @@
+meta {
+  name: destroy
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{API_URL}}/oauth/clients/{{oauth_client_id}}
+  body: none
+  auth: inherit
+}
+
+docs {
+  Revoke a child-application OAuth client by id. Requires the
+  `delete global oauth_clients` permission. Returns 204 No Content.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

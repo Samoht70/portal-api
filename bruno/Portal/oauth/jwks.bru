@@ -1,0 +1,21 @@
+meta {
+  name: jwks
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{APP_URL}}/oauth/jwks
+  body: none
+  auth: none
+}
+
+docs {
+  JSON Web Key Set. Public signing keys child apps use to verify the
+  RS256-signed id_token / access tokens. Served at the host root (outside /api).
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

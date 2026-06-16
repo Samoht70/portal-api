@@ -1,0 +1,16 @@
+meta {
+  name: oauth
+  seq: 2
+}
+
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+vars:pre-request {
+  resource: oauth
+}

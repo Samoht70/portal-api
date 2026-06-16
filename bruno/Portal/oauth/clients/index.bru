@@ -1,0 +1,21 @@
+meta {
+  name: index
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{API_URL}}/oauth/clients
+  body: none
+  auth: inherit
+}
+
+docs {
+  List the child-application OAuth clients owned by the current user.
+  Requires the `view global oauth_clients` permission.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,41 @@
+meta {
+  name: token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{APP_URL}}/oauth/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  grant_type: authorization_code
+  client_id: {{oauth_client_id}}
+  redirect_uri: {{oauth_redirect_uri}}
+  code: {{oauth_code}}
+  code_verifier: {{pkce_verifier}}
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setGlobalEnvVar('oauth_access_token', res.body.access_token);
+    bru.setGlobalEnvVar('oauth_refresh_token', res.body.refresh_token);
+    bru.setGlobalEnvVar('oauth_id_token', res.body.id_token);
+  }
+}
+
+docs {
+  OAuth2 token endpoint (authorization_code grant). Child apps are PUBLIC
+  clients (no secret) and prove possession of the code with the PKCE verifier.
+
+  Run the `authorize` flow first: `clients/store` mints a client, `authorize/show`
+  generates the PKCE pair, `authorize/approve` mints the code into `oauth_code`.
+  This exchanges that code for access / refresh / id tokens.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

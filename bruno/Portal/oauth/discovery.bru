@@ -1,0 +1,22 @@
+meta {
+  name: discovery
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{APP_URL}}/.well-known/openid-configuration
+  body: none
+  auth: none
+}
+
+docs {
+  OIDC discovery document. Public, served at the host root (outside /api).
+  Advertises the authorization / token / jwks endpoints, supported scopes
+  (openid, profile, email) and the RS256 id_token signing algorithm.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

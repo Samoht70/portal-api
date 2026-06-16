@@ -1,0 +1,34 @@
+meta {
+  name: redirect
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{APP_URL}}/oauth/authorize?client_id={{oauth_client_id}}&redirect_uri={{oauth_redirect_uri}}&response_type=code&scope=openid profile email&state={{oauth_state}}
+  body: none
+  auth: none
+}
+
+params:query {
+  client_id: {{oauth_client_id}}
+  redirect_uri: {{oauth_redirect_uri}}
+  response_type: code
+  scope: openid profile email
+  state: {{oauth_state}}
+}
+
+docs {
+  Browser entry point (GET /oauth/authorize at the host root). A top-level
+  navigation carries no bearer token, so the server bounces the browser (302) to
+  the SSO front-end's /authorize page, preserving the original OAuth query. The
+  front-end — holding the user's first-party token — then drives the stateless
+  `show` / `approve` API below.
+
+  Disable redirect-following in Bruno to inspect the 302 Location header.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

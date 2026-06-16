@@ -1,0 +1,37 @@
+meta {
+  name: refresh
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{APP_URL}}/oauth/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  grant_type: refresh_token
+  client_id: {{oauth_client_id}}
+  refresh_token: {{oauth_refresh_token}}
+  scope: openid profile email
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setGlobalEnvVar('oauth_access_token', res.body.access_token);
+    bru.setGlobalEnvVar('oauth_refresh_token', res.body.refresh_token);
+    bru.setGlobalEnvVar('oauth_id_token', res.body.id_token);
+  }
+}
+
+docs {
+  OAuth2 token endpoint (refresh_token grant). Rotates the child app's access /
+  refresh tokens using the refresh_token returned by `token`. Public client, no
+  secret — PKCE applies only to the initial code exchange.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

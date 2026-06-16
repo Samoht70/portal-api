@@ -1,0 +1,51 @@
+meta {
+  name: approve
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/oauth/authorize?client_id={{oauth_client_id}}&redirect_uri={{oauth_redirect_uri}}&response_type=code&scope=openid profile email&code_challenge={{pkce_challenge}}&code_challenge_method=S256&state={{oauth_state}}
+  body: json
+  auth: inherit
+}
+
+params:query {
+  client_id: {{oauth_client_id}}
+  redirect_uri: {{oauth_redirect_uri}}
+  response_type: code
+  scope: openid profile email
+  code_challenge: {{pkce_challenge}}
+  code_challenge_method: S256
+  state: {{oauth_state}}
+}
+
+body:json {
+  {
+    "approved": true
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    const url = res.body.redirect_url || '';
+    const match = url.match(/[?&]code=([^&]+)/);
+    if (match) {
+      bru.setGlobalEnvVar('oauth_code', decodeURIComponent(match[1]));
+    }
+  }
+}
+
+docs {
+  Approve the consent (POST /api/oauth/authorize, auth:api). Mints the
+  authorization code and returns `redirect_url` — the child app's redirect_uri
+  carrying `code` and `state`. Send `{"approved": false}` to deny instead.
+
+  Re-uses the same PKCE challenge + query as `show` (validated server-side). The
+  post-response script extracts `code` into `oauth_code` for the `token` exchange.
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
