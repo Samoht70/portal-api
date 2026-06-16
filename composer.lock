@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ced09cd113cde612feb2b2a6cade5fb",
+    "content-hash": "58119cb61dfce66119581e9612be1af6",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -1329,6 +1329,43 @@
                     "Functional\\Organizations\\": "src/",
                     "Functional\\Organizations\\Database\\Seeders\\": "database/seeders/",
                     "Functional\\Organizations\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "functional/subscriptions",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./functional/subscriptions",
+                "reference": "5af8f2ffa71e87ce3950edc5f462c06e7c81dd54"
+            },
+            "require": {
+                "functional/applications": "*",
+                "functional/organizations": "*",
+                "technical/event-distribution": "*",
+                "xefi/laravel-osdd": "*"
+            },
+            "type": "layer",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Functional\\Subscriptions\\Providers\\SubscriptionsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Functional\\Subscriptions\\": "src/",
+                    "Functional\\Subscriptions\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Functional\\Subscriptions\\Tests\\": "tests/"
                 }
             },
             "transport-options": {
@@ -12374,6 +12411,40 @@
                     "Technical\\Documentation\\": "src/"
                 }
             },
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "technical/event-distribution",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./technical/event-distribution",
+                "reference": "0ee7d95ec9e168f023f2d90a8e5e43edff3501af"
+            },
+            "require": {
+                "xefi/laravel-osdd": "*"
+            },
+            "type": "layer",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Technical\\EventDistribution\\Providers\\EventDistributionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Technical\\EventDistribution\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Technical\\EventDistribution\\Tests\\": "tests/"
+                }
+            },
+            "description": "Event distribution for the data-sync pipeline. Currently holds only the recipient-resolution contract; outbox, relay and jobs land in a later increment.",
             "transport-options": {
                 "relative": true
             }
