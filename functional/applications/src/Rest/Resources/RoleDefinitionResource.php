@@ -7,7 +7,6 @@ use Illuminate\Contracts\Database\Eloquent\Builder as ContractBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Lomkit\Rest\Http\Requests\RestRequest;
 use Lomkit\Rest\Http\Resource;
-use Lomkit\Rest\Relations\BelongsToMany;
 
 class RoleDefinitionResource extends Resource
 {

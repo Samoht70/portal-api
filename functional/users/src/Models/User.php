@@ -5,6 +5,7 @@ namespace Functional\Users\Models;
 use Functional\Applications\Models\ApplicationRole;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -15,19 +16,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Passport\HasApiTokens;
 use Lomkit\Access\Controls\HasControl;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
-use Technical\Authentication\Models\JwtUser;
 
 #[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
-#[Hidden(['password'])]
+#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes'])]
 #[UseFactory(UserFactory::class)]
-class User extends JwtUser implements HasLocalePreference, HasMedia
+class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail
 {
-    use HasControl, HasFactory, HasRoles, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes;
+    use HasApiTokens, HasControl, HasFactory, HasRoles, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.

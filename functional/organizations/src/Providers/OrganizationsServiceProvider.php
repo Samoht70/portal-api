@@ -40,7 +40,7 @@ class OrganizationsServiceProvider extends LayerServiceProvider
     private function bootRouting(): void
     {
         $this->withRouting(
-            api: __DIR__ . '/../../routes/api.php',
+            api: __DIR__.'/../../routes/api.php',
         );
     }
 

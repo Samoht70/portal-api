@@ -41,6 +41,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'restore global users',
             'force delete global users',
             'view global roles',
+            'view global oauth_clients',
+            'create global oauth_clients',
+            'delete global oauth_clients',
 
             // Client
             'view client sites',
@@ -57,6 +60,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'view own sites',
             'view own users',
             'update own users',
+
+            // Custom
+            'access horizon',
         ];
 
         foreach ($permissions as $permission) {
@@ -89,6 +95,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'restore global users',
             'force delete global users',
             'view global roles',
+            'view global oauth_clients',
+            'create global oauth_clients',
+            'delete global oauth_clients',
+            'access horizon',
         ]);
 
         $administrator = Role::findOrCreate(RoleName::Admin->value);
