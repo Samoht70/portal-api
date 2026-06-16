@@ -13,15 +13,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sites', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignIdFor(Client::class)->constrained();
-            $table->string('name');
-            $table->string('country');
-            $table->string('country_alpha');
-            $table->string('subdivision')->nullable();
-            $table->string('subdivision_code', 2)->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+            $table
+                ->portalSites()
+                ->portalForeignId(Client::class)
+                ->softDeletes();
         });
     }
 

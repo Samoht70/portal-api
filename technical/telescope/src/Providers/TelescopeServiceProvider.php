@@ -2,7 +2,7 @@
 
 namespace Technical\Telescope\Providers;
 
-use App\Models\User;
+use Functional\Users\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;

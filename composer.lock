@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf907ea8bd655df9cb0e34777a87cbac",
+    "content-hash": "7ced09cd113cde612feb2b2a6cade5fb",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -351,6 +351,40 @@
                 }
             ],
             "time": "2025-08-20T19:15:30+00:00"
+        },
+        {
+            "name": "dailyapps/portal-shared-schema",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./dailyapps/portal-shared-schema",
+                "reference": "2832edd40e4e7a9bb4f0f2f8612454a470554ea3"
+            },
+            "require": {
+                "xefi/laravel-osdd": "*"
+            },
+            "type": "layer",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dailyapps\\PortalShared\\Providers\\PortalSharedServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dailyapps\\PortalShared\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Dailyapps\\PortalShared\\Tests\\": "tests/"
+                }
+            },
+            "description": "Canonical identity/org core schema (Blueprint macros) shared between the portal mother app and its child replicas.",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "dasprid/enum",

@@ -11,17 +11,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignIdFor(Site::class)->constrained();
-            $table->foreignIdFor(User::class, 'manager_id')->nullable()->constrained();
-            $table->string('lastname');
-            $table->string('firstname');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table
+                ->portalUsers()
+                ->portalForeignId(Site::class)
+                ->portalForeignId(User::class, 'manager_id', nullable: true)
+                ->softDeletes();
+
             $table->string('password');
-            $table->string('language')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+            $table->timestamp('email_verified_at')->nullable();
         });
     }
 
