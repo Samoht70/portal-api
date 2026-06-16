@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table
+                ->portalClients()
+                ->softDeletes();
         });
     }
 
