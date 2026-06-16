@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.5",
         "dailyapps/portal-shared-schema": "*",
+        "functional/subscriptions": "*",
         "functional/users": "*",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
@@ -23,6 +24,7 @@
         "technical/xefi-faker": "*",
         "xefi/laravel-osdd": "^2.0",
         "technical/documentation": "*",
+        "technical/event-distribution": "*",
         "technical/authentication": "*",
         "technical/oauth-server": "*",
         "functional/organizations": "*",

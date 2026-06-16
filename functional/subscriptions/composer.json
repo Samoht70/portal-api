@@ -1,0 +1,32 @@
+{
+    "name": "functional/subscriptions",
+    "description": "",
+    "type": "layer",
+    "version": "1.0.0",
+    "require": {
+        "xefi/laravel-osdd": "*",
+        "technical/event-distribution": "*",
+        "functional/organizations": "*",
+        "functional/applications": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Functional\\Subscriptions\\": "src/",
+            "Functional\\Subscriptions\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Functional\\Subscriptions\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Functional\\Subscriptions\\Providers\\SubscriptionsServiceProvider"
+            ]
+        }
+    }
+}

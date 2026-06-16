@@ -44,6 +44,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'view global oauth_clients',
             'create global oauth_clients',
             'delete global oauth_clients',
+            'view global subscriptions',
+            'create global subscriptions',
+            'update global subscriptions',
+            'delete global subscriptions',
 
             // Client
             'view client sites',
@@ -53,6 +57,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'create client users',
             'update client users',
             'delete client users',
+            'view client subscriptions',
+            'create client subscriptions',
+            'update client subscriptions',
+            'delete client subscriptions',
 
             // Own
             'view own clients',
@@ -98,6 +106,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'view global oauth_clients',
             'create global oauth_clients',
             'delete global oauth_clients',
+            'view global subscriptions',
+            'create global subscriptions',
+            'update global subscriptions',
+            'delete global subscriptions',
             'access horizon',
         ]);
 
@@ -116,6 +128,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'create global users',
             'update client users',
             'delete client users',
+            'view client subscriptions',
+            'create client subscriptions',
+            'update client subscriptions',
+            'delete client subscriptions',
             'view global roles',
         ]);
 

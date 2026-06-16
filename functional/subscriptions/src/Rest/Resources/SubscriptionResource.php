@@ -1,24 +1,24 @@
 <?php
 
-namespace Functional\Organizations\Rest\Resources;
+namespace Functional\Subscriptions\Rest\Resources;
 
-use Functional\Organizations\Models\Client;
-use Functional\Subscriptions\Rest\Resources\SubscriptionResource;
-use Functional\Users\Rest\Resources\UserResource;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Functional\Applications\Rest\Resources\ApplicationResource;
+use Functional\Organizations\Rest\Resources\ClientResource;
+use Functional\Subscriptions\Models\Subscription;
+use Illuminate\Contracts\Database\Eloquent\Builder as ContractBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Lomkit\Rest\Http\Requests\RestRequest;
-use Lomkit\Rest\Relations\HasMany;
-use Lomkit\Rest\Relations\HasManyThrough;
-use Technical\Rest\Resource;
+use Lomkit\Rest\Http\Resource;
+use Lomkit\Rest\Relations\BelongsTo;
 
-class ClientResource extends Resource
+class SubscriptionResource extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<Client>
+     * @var class-string<Model>
      */
-    public static $model = Client::class;
+    public static $model = Subscription::class;
 
     /**
      * The exposed fields that could be provided
@@ -26,7 +26,7 @@ class ClientResource extends Resource
     public function fields(RestRequest $request): array
     {
         return [
-            'id', 'name',
+            'id', 'client_id', 'application_id', 'licenses',
         ];
     }
 
@@ -36,9 +36,9 @@ class ClientResource extends Resource
     public function relations(RestRequest $request): array
     {
         return [
-            HasMany::make('sites', SiteResource::class),
-            HasMany::make('subscriptions', SubscriptionResource::class),
-            HasManyThrough::make('users', UserResource::class),
+            BelongsTo::make('client', ClientResource::class),
+
+            BelongsTo::make('application', ApplicationResource::class),
         ];
     }
 
@@ -78,7 +78,7 @@ class ClientResource extends Resource
         return [];
     }
 
-    public function searchQuery(RestRequest $request, Builder $query): Builder
+    public function searchQuery(RestRequest $request, ContractBuilder $query): ContractBuilder
     {
         return $query->controlled();
     }
