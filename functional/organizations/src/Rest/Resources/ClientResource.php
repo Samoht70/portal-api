@@ -3,6 +3,7 @@
 namespace Functional\Organizations\Rest\Resources;
 
 use Functional\Organizations\Models\Client;
+use Functional\Subscriptions\Rest\Resources\SubscriptionResource;
 use Functional\Users\Rest\Resources\UserResource;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Lomkit\Rest\Http\Requests\RestRequest;
@@ -36,6 +37,7 @@ class ClientResource extends Resource
     {
         return [
             HasMany::make('sites', SiteResource::class),
+            HasMany::make('subscriptions', SubscriptionResource::class),
             HasManyThrough::make('users', UserResource::class),
         ];
     }

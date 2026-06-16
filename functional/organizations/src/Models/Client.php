@@ -3,6 +3,7 @@
 namespace Functional\Organizations\Models;
 
 use Functional\Organizations\Database\Factories\ClientFactory;
+use Functional\Subscriptions\Models\Subscription;
 use Functional\Users\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
@@ -28,5 +29,10 @@ class Client extends Model
     public function users(): HasManyThrough
     {
         return $this->hasManyThrough(User::class, Site::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 }

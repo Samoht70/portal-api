@@ -20,13 +20,13 @@ final readonly class SubscriptionResolver implements SubscriberResolver
     public function resolve(string $aggregateType, ?string $clientId): iterable
     {
         $clientForeignKey = (new Subscription)->client()->getForeignKeyName();
+        $applicationForeignKey = (new Subscription)->application()->getForeignKeyName();
 
         return Subscription::query()
             ->when($clientId !== null, fn ($query) => $query->where($clientForeignKey, $clientId))
-            ->get()
-            ->map(fn (Subscription $subscription) => new Subscriber($subscription->application()->getParentKey()))
-            ->unique(fn (Subscriber $subscriber) => $subscriber->applicationId)
-            ->values()
+            ->distinct()
+            ->pluck($applicationForeignKey)
+            ->map(fn (string $applicationId) => new Subscriber($applicationId))
             ->all();
     }
 }

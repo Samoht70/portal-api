@@ -35,7 +35,7 @@ class SubscriptionControl extends Control
                 ->allowed(function (Model&User $user, string $method) use ($table) {
                     return $user->can(sprintf('%s global %s', $method, $table));
                 })
-                ->should(function (Model&User $user, Subscription $model) {
+                ->should(function (Model&User $user, Subscription $subscription) {
                     return true;
                 })
                 ->query(function (Builder $query, User $user) {
@@ -49,7 +49,7 @@ class SubscriptionControl extends Control
                 ->should(function (Model&User $user, Subscription $model) {
                     return $model->client()->getParentKey() === $user->site->client()->getParentKey();
                 })
-                ->query(function (Builder $query, User $user) use ($clientForeignKey) {
+                ->query(function (Builder $query, Model&User $user) use ($clientForeignKey) {
                     return $query->where($clientForeignKey, $user->site->client()->getParentKey());
                 }),
         ];
