@@ -1,6 +1,6 @@
 <?php
 
-namespace Technical\EventDistribution\Contracts;
+namespace Dailyapps\EventDistribution\Contracts;
 
 /**
  * A model whose state is replicated to subscriber children.

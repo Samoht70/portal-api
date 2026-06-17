@@ -6,7 +6,7 @@ use Functional\Organizations\Models\Site;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
-use Technical\EventDistribution\Models\DomainEventRecord;
+use Dailyapps\EventDistribution\Models\DomainEventRecord;
 use Tests\TestCase;
 
 class SiteSyncTest extends TestCase

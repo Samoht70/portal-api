@@ -24,7 +24,7 @@
         "technical/xefi-faker": "*",
         "xefi/laravel-osdd": "^2.0",
         "technical/documentation": "*",
-        "technical/event-distribution": "*",
+        "dailyapps/event-distribution": "*",
         "technical/authentication": "*",
         "technical/oauth-server": "*",
         "functional/organizations": "*",

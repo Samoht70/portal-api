@@ -3,8 +3,8 @@
 namespace Functional\Subscriptions\Resolver;
 
 use Functional\Subscriptions\Models\Subscription;
-use Technical\EventDistribution\Contracts\SubscriberResolver;
-use Technical\EventDistribution\Values\Subscriber;
+use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
+use Dailyapps\EventDistribution\Values\Subscriber;
 
 final readonly class SubscriptionResolver implements SubscriberResolver
 {

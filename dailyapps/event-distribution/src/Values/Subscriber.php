@@ -1,6 +1,6 @@
 <?php
 
-namespace Technical\EventDistribution\Values;
+namespace Dailyapps\EventDistribution\Values;
 
 /**
  * A subscriber targeted by an event. Will later carry delivery coordinates

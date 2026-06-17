@@ -6,8 +6,8 @@ use Functional\Applications\Models\Application;
 use Functional\Organizations\Models\Client;
 use Functional\Subscriptions\Models\Subscription;
 use Functional\Subscriptions\Resolver\SubscriptionResolver;
-use Technical\EventDistribution\Contracts\SubscriberResolver;
-use Technical\EventDistribution\Values\Subscriber;
+use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
+use Dailyapps\EventDistribution\Values\Subscriber;
 use Tests\TestCase;
 
 /**

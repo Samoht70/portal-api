@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lomkit\Access\Controls\HasControl;
-use Technical\EventDistribution\Concerns\SyncsToReplica;
-use Technical\EventDistribution\Contracts\SyncableAggregate;
+use Dailyapps\EventDistribution\Concerns\SyncsToReplica;
+use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 
 #[Fillable(['id', 'client_id', 'name', 'country', 'country_alpha'])]
 #[UseFactory(SiteFactory::class)]

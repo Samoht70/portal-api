@@ -1,6 +1,6 @@
 <?php
 
-namespace Technical\EventDistribution\Models;
+namespace Dailyapps\EventDistribution\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;

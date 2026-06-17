@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "58119cb61dfce66119581e9612be1af6",
+    "content-hash": "c04a2dacb0d269657192e534c2b95843",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -351,6 +351,40 @@
                 }
             ],
             "time": "2025-08-20T19:15:30+00:00"
+        },
+        {
+            "name": "dailyapps/event-distribution",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "./dailyapps/event-distribution",
+                "reference": "a8e66a8b9f3334d239229c9281c9085fdf6aa5ea"
+            },
+            "require": {
+                "xefi/laravel-osdd": "*"
+            },
+            "type": "layer",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dailyapps\\EventDistribution\\Providers\\EventDistributionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dailyapps\\EventDistribution\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Dailyapps\\EventDistribution\\Tests\\": "tests/"
+                }
+            },
+            "description": "Event distribution for the data-sync pipeline. Currently holds only the recipient-resolution contract; outbox, relay and jobs land in a later increment.",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "dailyapps/portal-shared-schema",
@@ -1311,10 +1345,9 @@
             "dist": {
                 "type": "path",
                 "url": "./functional/organizations",
-                "reference": "2bf721c7e0d18d3a0fcc85373d9a3187dd75e5f9"
+                "reference": "516fb02764feb1c0c2d89b193fda2a7bf88ec428"
             },
             "require": {
-                "technical/event-distribution": "*",
                 "xefi/laravel-osdd": "*"
             },
             "type": "layer",
@@ -1347,12 +1380,12 @@
             "dist": {
                 "type": "path",
                 "url": "./functional/subscriptions",
-                "reference": "5af8f2ffa71e87ce3950edc5f462c06e7c81dd54"
+                "reference": "11b6057af6fec673f2505150010d9e1b0557ea93"
             },
             "require": {
+                "dailyapps/event-distribution": "*",
                 "functional/applications": "*",
                 "functional/organizations": "*",
-                "technical/event-distribution": "*",
                 "xefi/laravel-osdd": "*"
             },
             "type": "layer",
@@ -12417,40 +12450,6 @@
                     "Technical\\Documentation\\": "src/"
                 }
             },
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
-            "name": "technical/event-distribution",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "./technical/event-distribution",
-                "reference": "0ee7d95ec9e168f023f2d90a8e5e43edff3501af"
-            },
-            "require": {
-                "xefi/laravel-osdd": "*"
-            },
-            "type": "layer",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Technical\\EventDistribution\\Providers\\EventDistributionServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Technical\\EventDistribution\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Technical\\EventDistribution\\Tests\\": "tests/"
-                }
-            },
-            "description": "Event distribution for the data-sync pipeline. Currently holds only the recipient-resolution contract; outbox, relay and jobs land in a later increment.",
             "transport-options": {
                 "relative": true
             }

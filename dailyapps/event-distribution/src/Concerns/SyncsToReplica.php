@@ -1,6 +1,6 @@
 <?php
 
-namespace Technical\EventDistribution\Concerns;
+namespace Dailyapps\EventDistribution\Concerns;
 
 trait SyncsToReplica
 {

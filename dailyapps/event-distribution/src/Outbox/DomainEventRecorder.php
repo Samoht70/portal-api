@@ -1,11 +1,11 @@
 <?php
 
-namespace Technical\EventDistribution\Outbox;
+namespace Dailyapps\EventDistribution\Outbox;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Technical\EventDistribution\Contracts\SyncableAggregate;
-use Technical\EventDistribution\Models\DomainEventRecord;
+use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
+use Dailyapps\EventDistribution\Models\DomainEventRecord;
 
 /**
  * The single sanctioned writer of the outbox table.
