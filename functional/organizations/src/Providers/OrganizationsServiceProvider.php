@@ -11,7 +11,7 @@ use Functional\Organizations\Models\Site;
 use Functional\Organizations\Policies\ClientPolicy;
 use Functional\Organizations\Policies\SitePolicy;
 use Technical\AccessControl\ControlRegistry;
-use Technical\EventDistribution\SyncableRegistry;
+use Dailyapps\EventDistribution\SyncableRegistry;
 use Technical\Osdd\GateRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 

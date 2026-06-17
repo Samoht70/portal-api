@@ -7,7 +7,7 @@ use Functional\Subscriptions\Models\Subscription;
 use Functional\Subscriptions\Policies\SubscriptionPolicy;
 use Functional\Subscriptions\Resolver\SubscriptionResolver;
 use Technical\AccessControl\ControlRegistry;
-use Technical\EventDistribution\Contracts\SubscriberResolver;
+use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
 use Technical\Osdd\GateRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 

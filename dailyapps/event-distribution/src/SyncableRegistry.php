@@ -1,6 +1,6 @@
 <?php
 
-namespace Technical\EventDistribution;
+namespace Dailyapps\EventDistribution;
 
 class SyncableRegistry
 {

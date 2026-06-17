@@ -1,10 +1,10 @@
 <?php
 
-namespace Technical\EventDistribution\Providers;
+namespace Dailyapps\EventDistribution\Providers;
 
-use Technical\EventDistribution\Listeners\RecordAggregateDeleted;
-use Technical\EventDistribution\Listeners\RecordAggregateUpserted;
-use Technical\EventDistribution\SyncableRegistry;
+use Dailyapps\EventDistribution\Listeners\RecordAggregateDeleted;
+use Dailyapps\EventDistribution\Listeners\RecordAggregateUpserted;
+use Dailyapps\EventDistribution\SyncableRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
 /**

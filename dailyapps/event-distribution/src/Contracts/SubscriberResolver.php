@@ -1,8 +1,8 @@
 <?php
 
-namespace Technical\EventDistribution\Contracts;
+namespace Dailyapps\EventDistribution\Contracts;
 
-use Technical\EventDistribution\Values\Subscriber;
+use Dailyapps\EventDistribution\Values\Subscriber;
 
 interface SubscriberResolver
 {

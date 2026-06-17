@@ -1,5 +1,5 @@
 {
-    "name": "technical/event-distribution",
+    "name": "dailyapps/event-distribution",
     "description": "Event distribution for the data-sync pipeline. Currently holds only the recipient-resolution contract; outbox, relay and jobs land in a later increment.",
     "type": "layer",
     "version": "1.0.0",
@@ -8,12 +8,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Technical\\EventDistribution\\": "src/"
+            "Dailyapps\\EventDistribution\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Technical\\EventDistribution\\Tests\\": "tests/"
+            "Dailyapps\\EventDistribution\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable",
@@ -21,7 +21,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Technical\\EventDistribution\\Providers\\EventDistributionServiceProvider"
+                "Dailyapps\\EventDistribution\\Providers\\EventDistributionServiceProvider"
             ]
         }
     }

@@ -24,7 +24,7 @@
         "technical/xefi-faker": "*",
         "xefi/laravel-osdd": "^2.0",
         "technical/documentation": "*",
-        "technical/event-distribution": "*",
+        "dailyapps/event-distribution": "*",
         "technical/authentication": "*",
         "technical/oauth-server": "*",
         "functional/organizations": "*",
@@ -32,6 +32,7 @@
         "functional/applications": "*"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.7",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.5",
         "laravel/pint": "^1.27",
@@ -65,6 +66,9 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "ide-helper": [
+            "@php artisan ide-helper:models -N \"Dailyapps\\EventDistribution\\Models\\DomainEventRecord\" \"Functional\\Applications\\Models\\Application\" \"Functional\\Applications\\Models\\ApplicationRole\" \"Functional\\Applications\\Models\\Pack\" \"Functional\\Applications\\Models\\RoleDefinition\" \"Functional\\Organizations\\Models\\Client\" \"Functional\\Organizations\\Models\\Site\" \"Functional\\Subscriptions\\Models\\Subscription\" \"Functional\\Users\\Models\\UserHoldsApplicationRole\" \"Functional\\Users\\Models\\User\" \"Technical\\AccessControl\\Models\\Role\" \"Technical\\Translations\\Models\\ApplicationTranslation\" \"Technical\\Translations\\Models\\PackTranslation\""
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

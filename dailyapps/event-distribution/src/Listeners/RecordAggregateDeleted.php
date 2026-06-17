@@ -1,10 +1,10 @@
 <?php
 
-namespace Technical\EventDistribution\Listeners;
+namespace Dailyapps\EventDistribution\Listeners;
 
 use Illuminate\Database\Eloquent\Model;
-use Technical\EventDistribution\Contracts\SyncableAggregate;
-use Technical\EventDistribution\Outbox\DomainEventRecorder;
+use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
+use Dailyapps\EventDistribution\Outbox\DomainEventRecorder;
 
 /**
  * Records a soft-delete event when a synced aggregate is deleted.
