@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Lomkit\Access\Controls\HasControl;
+use Technical\EventDistribution\Concerns\SyncsToReplica;
+use Technical\EventDistribution\Contracts\SyncableAggregate;
 
 #[Fillable(['id', 'client_id', 'name', 'country', 'country_alpha'])]
 #[UseFactory(SiteFactory::class)]
-class Site extends Model
+class Site extends Model implements SyncableAggregate
 {
-    use HasControl, HasFactory, HasUuids, SoftDeletes;
+    use HasControl, HasFactory, HasUuids, SoftDeletes, SyncsToReplica;
 
     public function client(): BelongsTo
     {
@@ -28,5 +30,10 @@ class Site extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function syncTenantScope(): ?string
+    {
+        return $this->client()->getParentKey();
     }
 }
