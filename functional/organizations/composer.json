@@ -13,6 +13,11 @@
             "Functional\\Organizations\\Database\\Factories\\": "database/factories/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Functional\\Organizations\\Tests\\": "tests/"
+        }
+    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "extra": {

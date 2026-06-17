@@ -6,12 +6,15 @@ use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Functional\Applications\Database\Factories\ApplicationFactory;
 use Functional\Applications\Enums\ApplicationSlug;
+use Functional\Organizations\Models\Client;
+use Functional\Subscriptions\Models\Subscription;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Lomkit\Access\Controls\HasControl;
 
@@ -41,5 +44,17 @@ class Application extends Model implements TranslatableContract
     public function roles(): HasMany
     {
         return $this->hasMany(ApplicationRole::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function clients(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class, 'subscriptions')
+            ->withPivot('licenses')
+            ->withTimestamps();
     }
 }

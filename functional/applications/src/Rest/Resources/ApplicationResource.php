@@ -3,11 +3,14 @@
 namespace Functional\Applications\Rest\Resources;
 
 use Functional\Applications\Models\Application;
+use Functional\Organizations\Rest\Resources\ClientResource;
+use Functional\Subscriptions\Rest\Resources\SubscriptionResource;
 use Illuminate\Contracts\Database\Eloquent\Builder as ContractBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Lomkit\Rest\Http\Requests\RestRequest;
 use Lomkit\Rest\Http\Resource;
 use Lomkit\Rest\Relations\BelongsTo;
+use Lomkit\Rest\Relations\BelongsToMany;
 use Lomkit\Rest\Relations\HasMany;
 use Technical\Translations\Rest\Resources\ApplicationTranslationResource;
 
@@ -41,6 +44,11 @@ class ApplicationResource extends Resource
             HasMany::make('roles', ApplicationRoleResource::class),
 
             HasMany::make('translations', ApplicationTranslationResource::class),
+
+            HasMany::make('subscriptions', SubscriptionResource::class),
+
+            BelongsToMany::make('clients', ClientResource::class)
+                ->withPivotFields(['licenses']),
         ];
     }
 

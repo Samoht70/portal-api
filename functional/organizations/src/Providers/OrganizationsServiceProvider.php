@@ -11,6 +11,7 @@ use Functional\Organizations\Models\Site;
 use Functional\Organizations\Policies\ClientPolicy;
 use Functional\Organizations\Policies\SitePolicy;
 use Technical\AccessControl\ControlRegistry;
+use Technical\EventDistribution\SyncableRegistry;
 use Technical\Osdd\GateRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
@@ -30,6 +31,7 @@ class OrganizationsServiceProvider extends LayerServiceProvider
         $this->bootRouting();
         $this->registerPolicies();
         $this->registerControls();
+        $this->registerSyncables();
     }
 
     public function register(): void
@@ -57,6 +59,14 @@ class OrganizationsServiceProvider extends LayerServiceProvider
         $this->app->make(ControlRegistry::class)->push([
             ClientControl::new(),
             SiteControl::new(),
+        ]);
+    }
+
+    private function registerSyncables(): void
+    {
+        $this->app->make(SyncableRegistry::class)->push([
+            Client::class,
+            Site::class,
         ]);
     }
 }

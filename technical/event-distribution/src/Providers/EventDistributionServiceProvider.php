@@ -2,17 +2,38 @@
 
 namespace Technical\EventDistribution\Providers;
 
+use Technical\EventDistribution\Listeners\RecordAggregateDeleted;
+use Technical\EventDistribution\Listeners\RecordAggregateUpserted;
+use Technical\EventDistribution\SyncableRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
 /**
  * Wires the event-distribution layer.
- *
- * This increment only exposes the recipient-resolution contract; the outbox,
- * relay and dispatch jobs land in a later increment.
  */
 class EventDistributionServiceProvider extends LayerServiceProvider
 {
-    public function boot(): void {}
+    public function register(): void
+    {
+        $this->app->singleton(SyncableRegistry::class);
+    }
 
-    public function register(): void {}
+    public function boot(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+
+        $this->bootOutboxCapture();
+    }
+
+    private function bootOutboxCapture(): void
+    {
+        $this->app->booted(function () {
+            $models = $this->app->make(SyncableRegistry::class)->models();
+
+            foreach ($models as $model) {
+                $model::created(RecordAggregateUpserted::class);
+                $model::updated(RecordAggregateUpserted::class);
+                $model::deleted(RecordAggregateDeleted::class);
+            }
+        });
+    }
 }
