@@ -19,5 +19,9 @@ class PortalSharedServiceProvider extends LayerServiceProvider
         if ($this->app->runningInConsole() && config('portal-shared.replica')) {
             $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
         }
+
+        if (config('portal-shared.replica')) {
+            $this->withRouting(api: __DIR__.'/../../routes/api.php');
+        }
     }
 }

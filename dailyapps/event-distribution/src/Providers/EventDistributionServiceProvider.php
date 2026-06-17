@@ -22,6 +22,7 @@ class EventDistributionServiceProvider extends LayerServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
         $this->bootOutboxCapture();
+        $this->bootRouting();
     }
 
     private function bootOutboxCapture(): void
@@ -35,5 +36,12 @@ class EventDistributionServiceProvider extends LayerServiceProvider
                 $model::deleted(RecordAggregateDeleted::class);
             }
         });
+    }
+
+    private function bootRouting(): void
+    {
+        $this->withRouting(
+            commands: __DIR__.'/../../routes/console.php',
+        );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Functional\Subscriptions\Resolver;
 
+use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
 use Functional\Subscriptions\Models\Subscription;
 use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
 use Dailyapps\EventDistribution\Values\Subscriber;
@@ -10,23 +11,33 @@ final readonly class SubscriptionResolver implements SubscriberResolver
 {
     /**
      * Resolve the subscribers that should receive an event.
-     *
-     * The $aggregateType is accepted for forward-compatibility but is not yet
-     * used to filter: every subscriber receives the whole identity/org core.
-     *
-     * When $clientId is null the event is global, so all subscribers are
-     * returned, deduped by application.
      */
     public function resolve(string $aggregateType, ?string $clientId): iterable
     {
         $clientForeignKey = (new Subscription)->client()->getForeignKeyName();
-        $applicationForeignKey = (new Subscription)->application()->getForeignKeyName();
+        $subscriptionApplicationForeignKey = (new Subscription)->application()->getForeignKeyName();
+        $endpointApplicationForeignKey = (new ApplicationSyncEndpoint)->application()->getForeignKeyName();
 
         return Subscription::query()
-            ->when($clientId !== null, fn ($query) => $query->where($clientForeignKey, $clientId))
+            ->select([
+                'subscriptions.'.$subscriptionApplicationForeignKey.' as application_id',
+                'application_sync_endpoints.endpoint_url as endpoint_url',
+                'application_sync_endpoints.secret as secret',
+            ])
+            ->join(
+                'application_sync_endpoints',
+                'subscriptions.'.$subscriptionApplicationForeignKey,
+                'application_sync_endpoints.'.$endpointApplicationForeignKey
+            )
+            ->where('application_sync_endpoints.sync_enabled', true)
+            ->when($clientId !== null, fn ($query) => $query->where('subscriptions.'.$clientForeignKey, $clientId))
             ->distinct()
-            ->pluck($applicationForeignKey)
-            ->map(fn (string $applicationId) => new Subscriber($applicationId))
+            ->get()
+            ->map(fn ($row) => new Subscriber(
+                applicationId: $row->application_id,
+                endpointUrl: $row->endpoint_url,
+                secret: $row->secret,
+            ))
             ->all();
     }
 }
