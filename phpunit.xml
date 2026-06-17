@@ -16,6 +16,9 @@
     <testsuite name="functional/organizations">
       <directory>functional/organizations/tests</directory>
     </testsuite>
+    <testsuite name="dailyapps/event-distribution">
+      <directory>dailyapps/event-distribution/tests</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>

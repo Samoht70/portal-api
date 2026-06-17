@@ -504,9 +504,24 @@ Ordre recommandé (chaque étape est validable indépendamment) :
    qui rollback **n'écrit aucune ligne** (atomicité — `cf. SiteSyncTest`). L'approche
    « 1 Action = 1 mutation » (`RenameSite`) est **abandonnée** au profit de la capture
    persistance ; les Actions ne restent que pour les **events sémantiques** (incr. ultérieurs).
-4. **1 livraison signée → 1 enfant jouet** : relais (routage via `SubscriberResolver`) →
-   `DeliverDomainEvent` → endpoint qui vérifie HMAC, déduplique, upsert dans le réplica
-   read-only ; rejouer le même événement et confirmer l'idempotence (aucune 2ᵉ mutation).
+4. **[FAIT]** **1 livraison signée → 1 enfant jouet** : côté mère —
+   `EventEnvelope` (contrat versionné `SCHEMA_VERSION`), `HmacSigner`, job `RelayDomainEvents`
+   (auto-redispatché, draine l'outbox par `sequence`, route via `SubscriberResolver`, tamponne
+   `published_at`, heartbeat planifié `everyMinute`), job `DeliverDomainEvent` (file `sync`,
+   `tries`/backoff, POST signé `X-Signature`=HMAC-SHA256 du corps brut + en-têtes `X-Event-Id`/
+   `X-Event-Sequence`/`X-Aggregate`/`X-Schema-Version`), supervisor Horizon `sync` dédié. Les
+   **coordonnées de livraison** différées à l'incr. 2 sont posées : table sœur
+   `application_sync_endpoints` (`endpoint_url`, `secret` `#[Hidden]`, `sync_enabled`) +
+   `ApplicationSyncEndpoint`, et `Subscriber`/`SubscriptionResolver` portent désormais
+   `endpointUrl`+`secret` en ne résolvant que les souscripteurs `sync_enabled`. Côté enfant
+   (`dailyapps/portal-shared-schema`) — table `processed_events`, modèle `ProcessedEvent`,
+   trait `ReadOnlyReplica` (le nom `ReadOnly` est interdit : `readonly` est un mot-clé
+   réservé, insensible à la casse) + `ReplicaIsReadOnlyException`, écrivain `ReplicaWriter`
+   (`DB::table()->upsert()` filtré aux colonnes locales) et contrôleur `HandleDomainEvent`
+   (vérif HMAC → 401 sinon, dédup `X-Event-Id`, upsert d'état complet en transaction).
+   ✅ critère : un event signé est appliqué dans le réplica ; **rejouer le même `X-Event-Id`
+   renvoie `duplicate` et ne produit aucune 2ᵉ mutation** ; mauvaise signature rejetée (401) ;
+   relais ne dispatche que vers les `Application` `sync_enabled` et tamponne `published_at`.
 5. **Amorçage + cycle de souscription + reconcile** : peupler un enfant neuf via REST
    snapshot (scopé aux orgs souscrites), noter la `sequence` haute, injecter un événement
    obsolète et vérifier qu'il est ignoré ; tester `SubscriptionGranted` → backfill ciblé et
