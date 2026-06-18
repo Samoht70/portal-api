@@ -90,6 +90,10 @@ class HandleDomainEventTest extends TestCase
         } catch (HttpException $e) {
             $this->assertSame(401, $e->getStatusCode());
         }
+
+        // A rejected signature must leave no trace: nothing applied, nothing deduped.
+        $this->assertSame(0, DB::table('replica_clients')->count());
+        $this->assertSame(0, DB::table('processed_events')->count());
     }
 
     /**
