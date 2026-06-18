@@ -7,6 +7,7 @@ use Functional\Subscriptions\Database\Factories\ApplicationSyncEndpointFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,5 +31,21 @@ class ApplicationSyncEndpoint extends Model
     public function application(): BelongsTo
     {
         return $this->belongsTo(Application::class);
+    }
+
+    /**
+     * @param  Builder<ApplicationSyncEndpoint>  $query
+     */
+    public function scopeForApplication(Builder $query, string $applicationId): void
+    {
+        $query->where($this->application()->getForeignKeyName(), $applicationId);
+    }
+
+    /**
+     * @param  Builder<ApplicationSyncEndpoint>  $query
+     */
+    public function scopeEnabled(Builder $query): void
+    {
+        $query->where('sync_enabled', true);
     }
 }

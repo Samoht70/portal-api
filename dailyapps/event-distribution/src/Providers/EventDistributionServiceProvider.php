@@ -41,6 +41,7 @@ class EventDistributionServiceProvider extends LayerServiceProvider
     private function bootRouting(): void
     {
         $this->withRouting(
+            api: __DIR__.'/../../routes/api.php',
             commands: __DIR__.'/../../routes/console.php',
         );
     }

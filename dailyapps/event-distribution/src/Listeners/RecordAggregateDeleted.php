@@ -2,9 +2,10 @@
 
 namespace Dailyapps\EventDistribution\Listeners;
 
-use Illuminate\Database\Eloquent\Model;
 use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 use Dailyapps\EventDistribution\Outbox\DomainEventRecorder;
+use Dailyapps\EventDistribution\Outbox\SyncVerb;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Records a soft-delete event when a synced aggregate is deleted.
@@ -15,6 +16,6 @@ readonly class RecordAggregateDeleted
 
     public function handle(Model&SyncableAggregate $aggregate): void
     {
-        $this->recorder->record($aggregate, 'deleted');
+        $this->recorder->record($aggregate, SyncVerb::Deleted);
     }
 }

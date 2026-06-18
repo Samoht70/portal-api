@@ -24,6 +24,9 @@ class HandleDomainEventTest extends TestCase
         Schema::dropIfExists('processed_events');
         (include base_path('dailyapps/portal-shared-schema/database/migrations/0000_00_00_000002_create_processed_events_table.php'))->up();
 
+        Schema::dropIfExists('replica_sync_state');
+        (include base_path('dailyapps/portal-shared-schema/database/migrations/0000_00_00_000003_create_replica_sync_state_table.php'))->up();
+
         Schema::dropIfExists('replica_clients');
         Schema::create('replica_clients', function (Blueprint $table) {
             $table->portalClients()->softDeletes();
@@ -33,6 +36,7 @@ class HandleDomainEventTest extends TestCase
     protected function tearDown(): void
     {
         Schema::dropIfExists('replica_clients');
+        Schema::dropIfExists('replica_sync_state');
         Schema::dropIfExists('processed_events');
 
         parent::tearDown();

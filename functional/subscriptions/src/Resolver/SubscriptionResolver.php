@@ -2,10 +2,10 @@
 
 namespace Functional\Subscriptions\Resolver;
 
-use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
-use Functional\Subscriptions\Models\Subscription;
 use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
 use Dailyapps\EventDistribution\Values\Subscriber;
+use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
+use Functional\Subscriptions\Models\Subscription;
 
 final readonly class SubscriptionResolver implements SubscriberResolver
 {
@@ -39,5 +39,24 @@ final readonly class SubscriptionResolver implements SubscriberResolver
                 secret: $row->secret,
             ))
             ->all();
+    }
+
+    /**
+     * Resolve one Application's delivery coordinates from its sync endpoint,
+     * regardless of its current subscriptions.
+     */
+    public function resolveApplication(string $applicationId): ?Subscriber
+    {
+        $endpoint = ApplicationSyncEndpoint::forApplication($applicationId)->enabled()->first();
+
+        if ($endpoint === null) {
+            return null;
+        }
+
+        return new Subscriber(
+            applicationId: $applicationId,
+            endpointUrl: $endpoint->endpoint_url,
+            secret: $endpoint->secret,
+        );
     }
 }

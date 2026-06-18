@@ -5,6 +5,8 @@ namespace Functional\Subscriptions\Models;
 use Functional\Applications\Models\Application;
 use Functional\Organizations\Models\Client;
 use Functional\Subscriptions\Database\Factories\SubscriptionFactory;
+use Functional\Subscriptions\Events\SubscriptionGranted;
+use Functional\Subscriptions\Events\SubscriptionRevoked;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -20,6 +22,11 @@ class Subscription extends Model
     use HasControl;
     use HasFactory;
     use HasUuids;
+
+    protected $dispatchesEvents = [
+        'created' => SubscriptionGranted::class,
+        'deleted' => SubscriptionRevoked::class,
+    ];
 
     protected function casts(): array
     {

@@ -13,4 +13,11 @@ interface SubscriberResolver
      * @return iterable<Subscriber>
      */
     public function resolve(string $aggregateType, ?string $clientId): iterable;
+
+    /**
+     * Resolve a single Application's delivery coordinates, independent of any
+     * subscription (used to backfill on grant and purge on revoke). Returns null
+     * when the Application has no sync endpoint or its sync is disabled.
+     */
+    public function resolveApplication(string $applicationId): ?Subscriber;
 }

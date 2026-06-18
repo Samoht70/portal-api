@@ -19,16 +19,45 @@ final class EventEnvelope
      */
     public static function fromRecord(DomainEventRecord $record): array
     {
+        return self::wrap(
+            id: $record->id,
+            sequence: (int) $record->sequence,
+            aggregateType: $record->aggregate_type,
+            aggregateId: $record->aggregate_id,
+            eventType: $record->event_type,
+            tenantScope: $record->tenant_scope,
+            occurredAt: $record->occurred_at->toIso8601String(),
+            payload: $record->payload,
+        );
+    }
+
+    /**
+     * Assemble an envelope from raw parts — the single source of the wire shape,
+     * shared by outbox relay and on-demand backfill.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    public static function wrap(
+        string $id,
+        int $sequence,
+        string $aggregateType,
+        string $aggregateId,
+        string $eventType,
+        ?string $tenantScope,
+        string $occurredAt,
+        array $payload,
+    ): array {
         return [
-            'id' => $record->id,
-            'sequence' => (int) $record->sequence,
-            'aggregate_type' => $record->aggregate_type,
-            'aggregate_id' => $record->aggregate_id,
-            'event_type' => $record->event_type,
-            'tenant_scope' => $record->tenant_scope,
-            'occurred_at' => $record->occurred_at->toIso8601String(),
+            'id' => $id,
+            'sequence' => $sequence,
+            'aggregate_type' => $aggregateType,
+            'aggregate_id' => $aggregateId,
+            'event_type' => $eventType,
+            'tenant_scope' => $tenantScope,
+            'occurred_at' => $occurredAt,
             'schema_version' => self::SCHEMA_VERSION,
-            'payload' => $record->payload,
+            'payload' => $payload,
         ];
     }
 }

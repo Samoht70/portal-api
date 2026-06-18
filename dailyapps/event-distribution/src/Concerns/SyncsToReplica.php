@@ -2,6 +2,8 @@
 
 namespace Dailyapps\EventDistribution\Concerns;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
+
 trait SyncsToReplica
 {
     public function syncAggregateType(): string
@@ -20,5 +22,13 @@ trait SyncsToReplica
     public function toSyncPayload(): array
     {
         return $this->attributesToArray();
+    }
+
+    /**
+     * @param array<int, string> $clientIds
+     */
+    public static function syncSnapshotQuery(array $clientIds): Builder
+    {
+        return static::query()->whereIn('client_id', $clientIds);
     }
 }
