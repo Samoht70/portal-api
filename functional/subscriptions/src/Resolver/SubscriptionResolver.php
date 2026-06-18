@@ -40,4 +40,28 @@ final readonly class SubscriptionResolver implements SubscriberResolver
             ))
             ->all();
     }
+
+    /**
+     * Resolve one Application's delivery coordinates from its sync endpoint,
+     * regardless of its current subscriptions.
+     */
+    public function resolveApplication(string $applicationId): ?Subscriber
+    {
+        $endpointApplicationForeignKey = (new ApplicationSyncEndpoint)->application()->getForeignKeyName();
+
+        $endpoint = ApplicationSyncEndpoint::query()
+            ->where($endpointApplicationForeignKey, $applicationId)
+            ->where('sync_enabled', true)
+            ->first();
+
+        if ($endpoint === null) {
+            return null;
+        }
+
+        return new Subscriber(
+            applicationId: $applicationId,
+            endpointUrl: $endpoint->endpoint_url,
+            secret: $endpoint->secret,
+        );
+    }
 }

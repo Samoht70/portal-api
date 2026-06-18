@@ -17,10 +17,15 @@ class PortalSharedServiceProvider extends LayerServiceProvider
     {
         PortalSchema::registerMacros();
 
+        // Registered unconditionally in console (it self-guards on config) so it
+        // does not depend on replica mode being set at boot time. Migrations and
+        // routing actually act, so they stay gated behind replica mode.
+        if ($this->app->runningInConsole()) {
+            $this->commands([BootstrapReplica::class]);
+        }
+
         if ($this->app->runningInConsole() && config('portal-shared.replica')) {
             $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
-
-            $this->commands([BootstrapReplica::class]);
         }
 
         if (config('portal-shared.replica')) {
