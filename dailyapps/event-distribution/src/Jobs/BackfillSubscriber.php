@@ -5,6 +5,7 @@ namespace Dailyapps\EventDistribution\Jobs;
 use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 use Dailyapps\EventDistribution\Models\DomainEventRecord;
 use Dailyapps\EventDistribution\Outbox\EventEnvelope;
+use Dailyapps\EventDistribution\Outbox\SyncVerb;
 use Dailyapps\EventDistribution\SyncableRegistry;
 use Dailyapps\EventDistribution\Values\Subscriber;
 use Illuminate\Bus\Queueable;
@@ -62,6 +63,7 @@ class BackfillSubscriber implements ShouldQueue
     {
         $now = now();
         $type = $row->syncAggregateType();
+        $verb = $this->tombstone ? SyncVerb::Deleted : SyncVerb::Upserted;
         $payload = $row->toSyncPayload();
 
         if ($this->tombstone) {
@@ -73,7 +75,7 @@ class BackfillSubscriber implements ShouldQueue
             sequence: $sequence,
             aggregateType: $type,
             aggregateId: $row->getKey(),
-            eventType: $type.($this->tombstone ? '.deleted' : '.upserted'),
+            eventType: $verb->eventType($type),
             tenantScope: $this->clientId,
             occurredAt: $now->toIso8601String(),
             payload: $payload,

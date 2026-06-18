@@ -4,8 +4,8 @@ namespace Dailyapps\PortalShared\Console\Commands;
 
 use Dailyapps\PortalShared\Ingestion\ReplicaWatermark;
 use Dailyapps\PortalShared\Ingestion\ReplicaWriter;
+use Dailyapps\PortalShared\Support\MotherSyncClient;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
 
 /**
  * Bootstraps the replica by pulling the mother watermark and full snapshots.
@@ -19,25 +19,27 @@ class BootstrapReplica extends Command
     public function __construct(
         private readonly ReplicaWriter $writer,
         private readonly ReplicaWatermark $watermark,
+        private readonly MotherSyncClient $mother,
     ) {
         parent::__construct();
     }
 
     public function handle(): int
     {
-        $motherUrl = config('portal-shared.mother_url');
-        $appId = config('portal-shared.application_id');
-        $secret = config('portal-shared.sync_secret');
+        if (! config('portal-shared.replica')) {
+            $this->error('sync:bootstrap only runs on a replica (set PORTAL_SHARED_REPLICA).');
 
-        if (! $motherUrl || ! $appId || ! $secret) {
+            return self::FAILURE;
+        }
+
+        if (! $this->mother->isConfigured()) {
             $this->error('Missing portal-shared.mother_url, application_id or sync_secret configuration.');
 
             return self::FAILURE;
         }
 
         // Record the watermark first so any later event at or below it is ignored.
-        $watermark = (int) $this->signedGet($secret, $motherUrl, $appId, '/api/sync/watermark')['sequence'];
-        $this->watermark->set($watermark);
+        $this->watermark->set((int) $this->mother->get('/api/sync/watermark')['sequence']);
 
         foreach (config('portal-shared.snapshot_types', []) as $type) {
             $count = 0;
@@ -52,7 +54,7 @@ class BootstrapReplica extends Command
                     $path .= '&cursor='.rawurlencode($cursor);
                 }
 
-                $page = $this->signedGet($secret, $motherUrl, $appId, $path);
+                $page = $this->mother->get($path);
 
                 foreach ($page['data'] as $row) {
                     $this->writer->apply($type, $row);
@@ -66,23 +68,5 @@ class BootstrapReplica extends Command
         }
 
         return self::SUCCESS;
-    }
-
-    /**
-     * Issue a signed GET against the mother and return the decoded JSON body.
-     *
-     * @return array<string, mixed>
-     */
-    private function signedGet(string $secret, string $base, string $appId, string $path): array
-    {
-        $signature = hash_hmac('sha256', 'GET '.$path, $secret);
-
-        return Http::withHeaders([
-            'X-Application' => $appId,
-            'X-Signature' => $signature,
-        ])
-            ->get($base.$path)
-            ->throw()
-            ->json();
     }
 }

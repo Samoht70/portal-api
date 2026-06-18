@@ -7,12 +7,14 @@ use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
 use Dailyapps\EventDistribution\SyncableRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 /**
- * Serves a cursor-paginated snapshot of an aggregate type, scoped to the rows the
- * authenticated child Application is allowed to read.
+ * Returns a cheap checksum (row count and max updated_at) of an aggregate type,
+ * scoped to the rows the authenticated child Application is allowed to read, so a
+ * child can detect drift before pulling a full snapshot.
  */
-class SyncSnapshot
+class SyncChecksum
 {
     use AuthenticatesSyncPull;
 
@@ -25,7 +27,8 @@ class SyncSnapshot
     {
         $scope = $this->authorizeSyncPull($request, $this->resolver);
 
-        $class = $this->registry->modelFor((string) $request->query('type'));
+        $type = (string) $request->query('type');
+        $class = $this->registry->modelFor($type);
 
         if ($class === null) {
             abort(422);
@@ -33,19 +36,12 @@ class SyncSnapshot
 
         $query = $class::syncSnapshotQuery($scope->clientIds);
 
-        $since = $request->query('since');
-
-        if ($since !== null) {
-            $query = $query->where('updated_at', '>=', $since);
-        }
-
-        $paginator = $query
-            ->orderBy('id')
-            ->cursorPaginate(100);
+        $max = (clone $query)->max('updated_at');
 
         return response()->json([
-            'data' => collect($paginator->items())->map(fn ($item) => $item->toSyncPayload()),
-            'next_cursor' => $paginator->nextCursor()?->encode(),
+            'type' => $type,
+            'count' => (clone $query)->count(),
+            'last_updated_at' => $max ? Carbon::parse($max)->toIso8601String() : null,
         ]);
     }
 }

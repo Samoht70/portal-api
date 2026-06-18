@@ -2,6 +2,8 @@
 
 namespace Functional\Subscriptions\Providers;
 
+use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
+use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
 use Functional\Subscriptions\Access\Controls\SubscriptionControl;
 use Functional\Subscriptions\Events\SubscriptionGranted;
 use Functional\Subscriptions\Events\SubscriptionRevoked;
@@ -13,8 +15,6 @@ use Functional\Subscriptions\Resolver\SnapshotScopeResolver;
 use Functional\Subscriptions\Resolver\SubscriptionResolver;
 use Illuminate\Support\Facades\Event;
 use Technical\AccessControl\ControlRegistry;
-use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
-use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
 use Technical\Osdd\GateRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
@@ -61,6 +61,9 @@ class SubscriptionsServiceProvider extends LayerServiceProvider
 
     private function registerSyncListeners(): void
     {
+        // Subscription lifecycle is the "semantic events" carve-out of ARCHITECTURE-SYNC
+        // §3.1 — wired explicitly here, NOT through the generic SyncableRegistry capture
+        // (a Subscription is not a SyncableAggregate). Do not try to unify the two.
         Event::listen(SubscriptionGranted::class, BackfillOnGrant::class);
         Event::listen(SubscriptionRevoked::class, PurgeOnRevoke::class);
     }

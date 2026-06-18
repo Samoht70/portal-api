@@ -6,25 +6,43 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Reads and stores the bootstrap watermark used to discard stale events.
+ * Key/value store over replica_sync_state. Holds the bootstrap watermark used
+ * to discard stale events, plus any other replica sync bookkeeping (e.g. the
+ * last reconcile timestamp).
  */
 class ReplicaWatermark
 {
-    private const string KEY = 'bootstrap_sequence';
+    private const string BOOTSTRAP_KEY = 'bootstrap_sequence';
 
     private const string TABLE = 'replica_sync_state';
 
     public function get(): int
     {
-        if (! Schema::hasTable(self::TABLE)) {
-            return 0;
-        }
-
-        return (int) DB::table(self::TABLE)->where('key', self::KEY)->value('value');
+        return $this->getValue(self::BOOTSTRAP_KEY);
     }
 
     public function set(int $sequence): void
     {
-        DB::table(self::TABLE)->upsert([['key' => self::KEY, 'value' => $sequence]], ['key']);
+        $this->setValue(self::BOOTSTRAP_KEY, $sequence);
+    }
+
+    /**
+     * Read an arbitrary bigint value by key (0 when absent).
+     */
+    public function getValue(string $key): int
+    {
+        if (! Schema::hasTable(self::TABLE)) {
+            return 0;
+        }
+
+        return (int) DB::table(self::TABLE)->where('key', $key)->value('value');
+    }
+
+    /**
+     * Upsert an arbitrary bigint value by key.
+     */
+    public function setValue(string $key, int $value): void
+    {
+        DB::table(self::TABLE)->upsert([['key' => $key, 'value' => $value]], ['key']);
     }
 }

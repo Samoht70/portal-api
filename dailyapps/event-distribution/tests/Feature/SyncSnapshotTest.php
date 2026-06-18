@@ -85,6 +85,29 @@ class SyncSnapshotTest extends TestCase
         $this->assertNotContains($theirs->getKey(), $ids);
     }
 
+    public function test_snapshot_since_returns_only_rows_updated_at_or_after_it(): void
+    {
+        $client = Client::factory()->create();
+        $applicationId = $this->subscribe($client);
+
+        $older = Site::factory()->create(['client_id' => $client->getKey()]);
+        $newer = Site::factory()->create(['client_id' => $client->getKey()]);
+
+        $older->forceFill(['updated_at' => now()->subMinute()])->save();
+        $newer->forceFill(['updated_at' => now()->addMinute()])->save();
+
+        $since = now()->toIso8601String();
+
+        $response = $this->signedGet('/api/sync/snapshot?type=sites&since='.urlencode($since), $applicationId);
+
+        $response->assertOk();
+
+        $ids = collect($response->json('data'))->pluck('id')->all();
+
+        $this->assertContains($newer->getKey(), $ids);
+        $this->assertNotContains($older->getKey(), $ids);
+    }
+
     public function test_a_bad_signature_is_rejected(): void
     {
         $client = Client::factory()->create();

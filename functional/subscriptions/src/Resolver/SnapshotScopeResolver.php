@@ -2,10 +2,10 @@
 
 namespace Functional\Subscriptions\Resolver;
 
-use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
-use Functional\Subscriptions\Models\Subscription;
 use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
 use Dailyapps\EventDistribution\Values\SnapshotScope;
+use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
+use Functional\Subscriptions\Models\Subscription;
 
 final readonly class SnapshotScopeResolver implements SnapshotResolver
 {
@@ -16,14 +16,10 @@ final readonly class SnapshotScopeResolver implements SnapshotResolver
      */
     public function authorize(string $applicationId): ?SnapshotScope
     {
-        $endpointApplicationForeignKey = (new ApplicationSyncEndpoint)->application()->getForeignKeyName();
         $subscriptionApplicationForeignKey = (new Subscription)->application()->getForeignKeyName();
         $subscriptionClientForeignKey = (new Subscription)->client()->getForeignKeyName();
 
-        $endpoint = ApplicationSyncEndpoint::query()
-            ->where($endpointApplicationForeignKey, $applicationId)
-            ->where('sync_enabled', true)
-            ->first();
+        $endpoint = ApplicationSyncEndpoint::forApplication($applicationId)->enabled()->first();
 
         if ($endpoint === null) {
             return null;

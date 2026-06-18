@@ -2,10 +2,10 @@
 
 namespace Functional\Subscriptions\Resolver;
 
-use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
-use Functional\Subscriptions\Models\Subscription;
 use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
 use Dailyapps\EventDistribution\Values\Subscriber;
+use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
+use Functional\Subscriptions\Models\Subscription;
 
 final readonly class SubscriptionResolver implements SubscriberResolver
 {
@@ -47,12 +47,7 @@ final readonly class SubscriptionResolver implements SubscriberResolver
      */
     public function resolveApplication(string $applicationId): ?Subscriber
     {
-        $endpointApplicationForeignKey = (new ApplicationSyncEndpoint)->application()->getForeignKeyName();
-
-        $endpoint = ApplicationSyncEndpoint::query()
-            ->where($endpointApplicationForeignKey, $applicationId)
-            ->where('sync_enabled', true)
-            ->first();
+        $endpoint = ApplicationSyncEndpoint::forApplication($applicationId)->enabled()->first();
 
         if ($endpoint === null) {
             return null;
