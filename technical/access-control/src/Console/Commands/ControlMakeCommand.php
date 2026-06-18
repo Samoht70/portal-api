@@ -13,7 +13,8 @@ use Xefi\LaravelOSDD\Console\Commands\Make\ChoosesOsddLayer;
 #[AsCommand(name: 'osdd:control')]
 class ControlMakeCommand extends BaseControlMakeCommand
 {
-    use ChoosesOsddLayer, ChoosesPerimetersLayer;
+    use ChoosesOsddLayer;
+    use ChoosesPerimetersLayer;
 
     /**
      * The console command name.

@@ -2,10 +2,13 @@
 
 namespace Functional\Users\Models;
 
+use Dailyapps\EventDistribution\Concerns\SyncsToReplica;
+use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 use Functional\Applications\Models\ApplicationRole;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -28,9 +31,18 @@ use Spatie\Permission\Traits\HasRoles;
 #[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes'])]
 #[UseFactory(UserFactory::class)]
-class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail
+class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail, SyncableAggregate
 {
-    use HasApiTokens, HasControl, HasFactory, HasRoles, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
+    use HasApiTokens;
+    use HasControl;
+    use HasFactory;
+    use HasRoles;
+    use HasUuids;
+    use InteractsWithMedia;
+    use Notifiable;
+    use SoftDeletes;
+    use SyncsToReplica;
+    use TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -79,5 +91,19 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
     public function preferredLocale(): string
     {
         return $this->language;
+    }
+
+    public function syncTenantScope(): ?string
+    {
+        return $this->site()->withTrashed()->first()?->syncTenantScope();
+    }
+
+    /**
+     * @param  array<int, string>  $clientIds
+     */
+    public static function syncSnapshotQuery(array $clientIds): Builder
+    {
+        return static::query()
+            ->whereHas('site', fn ($query) => $query->whereIn('client_id', $clientIds));
     }
 }

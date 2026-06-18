@@ -20,7 +20,11 @@ use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 #[UseFactory(SiteFactory::class)]
 class Site extends Model implements SyncableAggregate
 {
-    use HasControl, HasFactory, HasUuids, SoftDeletes, SyncsToReplica;
+    use HasControl;
+    use HasFactory;
+    use HasUuids;
+    use SoftDeletes;
+    use SyncsToReplica;
 
     public function client(): BelongsTo
     {

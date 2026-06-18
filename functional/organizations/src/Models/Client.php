@@ -24,7 +24,11 @@ use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 #[UseFactory(ClientFactory::class)]
 class Client extends Model implements SyncableAggregate
 {
-    use HasControl, HasFactory, HasUuids, SoftDeletes, SyncsToReplica;
+    use HasControl;
+    use HasFactory;
+    use HasUuids;
+    use SoftDeletes;
+    use SyncsToReplica;
 
     public function sites(): HasMany
     {
@@ -54,8 +58,6 @@ class Client extends Model implements SyncableAggregate
     }
 
     /**
-     * A Client's tenant scope is its own key, so the snapshot is keyed directly.
-     *
      * @param array<int, string> $clientIds
      */
     public static function syncSnapshotQuery(array $clientIds): Builder

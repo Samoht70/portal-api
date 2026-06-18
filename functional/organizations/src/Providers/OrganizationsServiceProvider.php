@@ -34,11 +34,6 @@ class OrganizationsServiceProvider extends LayerServiceProvider
         $this->registerSyncables();
     }
 
-    public function register(): void
-    {
-        //
-    }
-
     private function bootRouting(): void
     {
         $this->withRouting(
