@@ -90,6 +90,24 @@ class HandleDomainEventTest extends TestCase
         } catch (HttpException $e) {
             $this->assertSame(401, $e->getStatusCode());
         }
+
+        // A rejected signature must leave no trace: nothing applied, nothing deduped.
+        $this->assertSame(0, DB::table('replica_clients')->count());
+        $this->assertSame(0, DB::table('processed_events')->count());
+    }
+
+    public function test_an_event_older_than_the_replay_window_is_rejected(): void
+    {
+        config(['portal-shared.replay_window' => 300]);
+
+        $envelope = $this->envelope((string) Str::uuid(), 'Acme', now()->subMinutes(10)->toDateTimeString());
+
+        $response = $this->dispatch($envelope);
+
+        // Properly signed but stale: dropped without applying or deduping it.
+        $this->assertSame('expired', $response->getData(true)['status']);
+        $this->assertSame(0, DB::table('replica_clients')->count());
+        $this->assertSame(0, DB::table('processed_events')->count());
     }
 
     /**
@@ -112,7 +130,7 @@ class HandleDomainEventTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function envelope(string $aggregateId, string $name): array
+    private function envelope(string $aggregateId, string $name, ?string $occurredAt = null): array
     {
         $now = now()->toDateTimeString();
 
@@ -123,7 +141,7 @@ class HandleDomainEventTest extends TestCase
             'aggregate_id' => $aggregateId,
             'event_type' => 'replica_clients.upserted',
             'tenant_scope' => null,
-            'occurred_at' => $now,
+            'occurred_at' => $occurredAt ?? $now,
             'schema_version' => 1,
             'payload' => [
                 'id' => $aggregateId,

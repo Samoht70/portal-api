@@ -69,4 +69,33 @@ class RelayDomainEventsTest extends TestCase
 
         Queue::assertNotPushed(DeliverDomainEvent::class);
     }
+
+    public function test_it_does_not_deliver_an_event_to_an_application_subscribed_to_another_client(): void
+    {
+        $subscribedClient = Client::factory()->create();
+        $otherClient = Client::factory()->create();
+        $application = Application::query()->firstOrFail();
+
+        // The application syncs ONE client only — never the other.
+        Subscription::factory()->create([
+            'client_id' => $subscribedClient->getKey(),
+            'application_id' => $application->getKey(),
+        ]);
+        ApplicationSyncEndpoint::factory()->create([
+            'application_id' => $application->getKey(),
+            'endpoint_url' => 'https://child.test/sync',
+            'secret' => 'top-secret',
+            'sync_enabled' => true,
+        ]);
+
+        // Drain setup noise, then emit a single event scoped to the OTHER client.
+        DomainEventRecord::query()->delete();
+        $otherClient->update(['name' => 'Renamed']);
+
+        Queue::fake();
+
+        (new RelayDomainEvents)->handle(app(SubscriberResolver::class));
+
+        Queue::assertNotPushed(DeliverDomainEvent::class);
+    }
 }
