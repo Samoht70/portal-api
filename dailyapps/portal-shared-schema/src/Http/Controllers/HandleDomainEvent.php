@@ -2,6 +2,7 @@
 
 namespace Dailyapps\PortalShared\Http\Controllers;
 
+use Dailyapps\PortalShared\Ingestion\ReplicaWatermark;
 use Dailyapps\PortalShared\Ingestion\ReplicaWriter;
 use Dailyapps\PortalShared\Models\ProcessedEvent;
 use Illuminate\Http\Request;
@@ -12,8 +13,10 @@ use Illuminate\Support\Facades\DB;
  */
 class HandleDomainEvent
 {
-    public function __construct(private readonly ReplicaWriter $writer)
-    {
+    public function __construct(
+        private readonly ReplicaWriter $writer,
+        private readonly ReplicaWatermark $watermark,
+    ) {
     }
 
     public function __invoke(Request $request)
@@ -31,6 +34,17 @@ class HandleDomainEvent
 
         if (ProcessedEvent::query()->whereKey($eventId)->exists()) {
             return response()->json(['status' => 'duplicate']);
+        }
+
+        // Discard events at or below the bootstrap watermark, or below the latest
+        // sequence already applied for this aggregate.
+        $floor = max(
+            $this->watermark->get(),
+            (int) ProcessedEvent::query()->where('aggregate_id', $envelope['aggregate_id'])->max('sequence'),
+        );
+
+        if ((int) $envelope['sequence'] <= $floor) {
+            return response()->json(['status' => 'stale']);
         }
 
         DB::transaction(function () use ($envelope, $eventId) {

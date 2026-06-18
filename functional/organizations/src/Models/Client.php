@@ -6,6 +6,7 @@ use Functional\Applications\Models\Application;
 use Functional\Organizations\Database\Factories\ClientFactory;
 use Functional\Subscriptions\Models\Subscription;
 use Functional\Users\Models\User;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -50,5 +51,15 @@ class Client extends Model implements SyncableAggregate
     public function syncTenantScope(): ?string
     {
         return $this->getKey();
+    }
+
+    /**
+     * A Client's tenant scope is its own key, so the snapshot is keyed directly.
+     *
+     * @param array<int, string> $clientIds
+     */
+    public static function syncSnapshotQuery(array $clientIds): Builder
+    {
+        return static::query()->whereKey($clientIds);
     }
 }

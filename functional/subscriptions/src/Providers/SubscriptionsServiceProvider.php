@@ -5,8 +5,10 @@ namespace Functional\Subscriptions\Providers;
 use Functional\Subscriptions\Access\Controls\SubscriptionControl;
 use Functional\Subscriptions\Models\Subscription;
 use Functional\Subscriptions\Policies\SubscriptionPolicy;
+use Functional\Subscriptions\Resolver\SnapshotScopeResolver;
 use Functional\Subscriptions\Resolver\SubscriptionResolver;
 use Technical\AccessControl\ControlRegistry;
+use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
 use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
 use Technical\Osdd\GateRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
@@ -27,6 +29,7 @@ class SubscriptionsServiceProvider extends LayerServiceProvider
     public function register(): void
     {
         $this->app->bind(SubscriberResolver::class, SubscriptionResolver::class);
+        $this->app->bind(SnapshotResolver::class, SnapshotScopeResolver::class);
     }
 
     private function bootRouting(): void

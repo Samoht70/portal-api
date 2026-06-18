@@ -24,4 +24,20 @@ class SyncableRegistry
     {
         return $this->models;
     }
+
+    /**
+     * The registered model class serving the given aggregate type, or null.
+     *
+     * @return class-string|null
+     */
+    public function modelFor(string $aggregateType): ?string
+    {
+        foreach ($this->models as $model) {
+            if ((new $model)->syncAggregateType() === $aggregateType) {
+                return $model;
+            }
+        }
+
+        return null;
+    }
 }

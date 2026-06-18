@@ -2,6 +2,7 @@
 
 namespace Dailyapps\PortalShared\Providers;
 
+use Dailyapps\PortalShared\Console\Commands\BootstrapReplica;
 use Dailyapps\PortalShared\Schema\PortalSchema;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
@@ -18,6 +19,8 @@ class PortalSharedServiceProvider extends LayerServiceProvider
 
         if ($this->app->runningInConsole() && config('portal-shared.replica')) {
             $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+
+            $this->commands([BootstrapReplica::class]);
         }
 
         if (config('portal-shared.replica')) {
