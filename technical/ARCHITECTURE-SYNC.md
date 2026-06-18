@@ -522,11 +522,27 @@ Ordre recommandé (chaque étape est validable indépendamment) :
    ✅ critère : un event signé est appliqué dans le réplica ; **rejouer le même `X-Event-Id`
    renvoie `duplicate` et ne produit aucune 2ᵉ mutation** ; mauvaise signature rejetée (401) ;
    relais ne dispatche que vers les `Application` `sync_enabled` et tamponne `published_at`.
-5. **Amorçage + cycle de souscription + reconcile** : peupler un enfant neuf via REST
-   snapshot (scopé aux orgs souscrites), noter la `sequence` haute, injecter un événement
-   obsolète et vérifier qu'il est ignoré ; tester `SubscriptionGranted` → backfill ciblé et
-   `SubscriptionRevoked` → purge ; lancer `ReconcileFromMother` après une perte simulée de
-   webhook et confirmer la convergence.
+5. **[FAIT]** **Amorçage + cycle de souscription + reconcile** — livré en **hybride**, sur 3
+   sous-branches (`feat/sync-bootstrap`, `feat/sync-lifecycle`, `feat/sync-reconcile`) :
+   - **Amorçage** : l'enfant neuf **pull** un snapshot scopé via un **endpoint sync dédié
+     authentifié HMAC** (`GET /api/sync/snapshot`, `GET /api/sync/watermark`), pas le REST
+     lomkit user-facing (il n'existe aucune identité machine ; on réutilise le secret HMAC
+     par `Application`). Commande enfant `sync:bootstrap` ; le watermark global + un plancher
+     de `sequence` **par agrégat** font rejeter les événements obsolètes (statut `stale` dans
+     `HandleDomainEvent`).
+   - **Cycle de souscription** : `Subscription` créée/supprimée → events `SubscriptionGranted`/
+     `SubscriptionRevoked` (`$dispatchesEvents` + `Event::listen`) → job `BackfillSubscriber`
+     qui **pousse** l'état courant de l'org vers le seul nouveau souscripteur via le pipeline
+     `DeliverDomainEvent` (grant) ou en tombstones `deleted_at` (revoke, soft-delete-via-upsert
+     §3.5). C'est le **backfill ciblé = push** (et non un re-pull REST).
+   - **Reconcile** : `GET /api/sync/checksum` (empreinte cheap count+last_updated_at sur le
+     périmètre souscrit) + `?since=` sur le snapshot ; commande enfant `sync:reconcile`
+     (delta horaire / `--full` nocturne avec tombstones) planifiée. Converge après perte de
+     webhook.
+   - **Point de conception à confirmer** : le backfill push estampille les lignes avec la
+     `sequence` max courante de l'outbox (au lieu du watermark/snapshot de pull du §3.4).
+     Jugé correct (plancher enfant par agrégat ; org neuve ⇒ plancher = watermark < max ⇒
+     appliqué), mais c'est un écart assumé lié au choix « push pour les grants ».
 6. **Sécurité** : test négatif (mauvaise signature → rejet), test d'isolation (une
    `Application` ne reçoit pas les événements d'un `client_id` auquel elle n'est pas
    souscrite), vérifier que les champs `#[Hidden]` n'apparaissent jamais dans un payload.
