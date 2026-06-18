@@ -58,8 +58,6 @@ class Client extends Model implements SyncableAggregate
     }
 
     /**
-     * A Client's tenant scope is its own key, so the snapshot is keyed directly.
-     *
      * @param array<int, string> $clientIds
      */
     public static function syncSnapshotQuery(array $clientIds): Builder
