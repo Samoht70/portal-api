@@ -6,6 +6,7 @@ use Dailyapps\PortalShared\Ingestion\ReplicaWatermark;
 use Dailyapps\PortalShared\Ingestion\ReplicaWriter;
 use Dailyapps\PortalShared\Models\ProcessedEvent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -31,6 +32,14 @@ class HandleDomainEvent
 
         $envelope = json_decode($raw, true);
         $eventId = $request->header('X-Event-Id') ?? $envelope['id'];
+
+        // Anti-replay: refuse to act on a signed envelope older than the configured
+        // window. A replayed capture is dropped — reconcile backfills any real gap.
+        $window = (int) config('portal-shared.replay_window');
+
+        if ($window > 0 && Carbon::parse($envelope['occurred_at'])->lt(now()->subSeconds($window))) {
+            return response()->json(['status' => 'expired']);
+        }
 
         if (ProcessedEvent::query()->whereKey($eventId)->exists()) {
             return response()->json(['status' => 'duplicate']);
