@@ -4,6 +4,7 @@ namespace Dailyapps\PortalSync\Providers;
 
 use Dailyapps\PortalSync\Console\Commands\BootstrapReplica;
 use Dailyapps\PortalSync\Console\Commands\ReconcileFromMother;
+use Dailyapps\PortalSync\Database\Seeders\CoreReplicaSeeder;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
 /**
@@ -19,15 +20,14 @@ class PortalSyncServiceProvider extends LayerServiceProvider
 
     public function boot(): void
     {
-        // Registered in console regardless of replica mode so registration does not
-        // depend on boot-time config; each command refuses to run unless replica
-        // mode and its sync config are set.
         if ($this->app->runningInConsole()) {
             $this->commands([BootstrapReplica::class, ReconcileFromMother::class]);
+
+            $this->loadSeeders([
+                CoreReplicaSeeder::class
+            ], 0);
         }
 
-        // The inbound webhook route and the reconcile schedule only make sense on a
-        // child, so they are gated behind replica mode.
         if (config('portal-sync.replica')) {
             $this->withRouting(
                 api: __DIR__.'/../../routes/api.php',

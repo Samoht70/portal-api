@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a6b1ee03e7e3f892bf9c3296c837ab05",
+    "content-hash": "60391539c92fd7577d813c1691a92808",
     "packages": [
         {
             "name": "astrotomic/laravel-translatable",
@@ -381,40 +381,6 @@
                 }
             },
             "description": "Event distribution for the data-sync pipeline. Currently holds only the recipient-resolution contract; outbox, relay and jobs land in a later increment.",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
-            "name": "dailyapps/portal-sync-client",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "./dailyapps/portal-sync-client",
-                "reference": "e084e07b4fb110519f7883335926fec0030aebaa"
-            },
-            "require": {
-                "xefi/laravel-osdd": "*"
-            },
-            "type": "layer",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Dailyapps\\PortalSync\\Providers\\PortalSyncServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Dailyapps\\PortalSync\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Dailyapps\\PortalSync\\Tests\\": "tests/"
-                }
-            },
-            "description": "Child-side sync ingestion for the portal data-sync pipeline: signed webhook receiver, replica writer, bootstrap and reconcile. Ships no shared schema — each child owns its replica migrations.",
             "transport-options": {
                 "relative": true
             }

@@ -24,7 +24,6 @@
         "xefi/laravel-osdd": "^2.0",
         "technical/documentation": "*",
         "dailyapps/event-distribution": "*",
-        "dailyapps/portal-sync-client": "*",
         "technical/authentication": "*",
         "technical/oauth-server": "*",
         "functional/organizations": "*",

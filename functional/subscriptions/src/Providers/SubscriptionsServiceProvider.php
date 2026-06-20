@@ -4,6 +4,7 @@ namespace Functional\Subscriptions\Providers;
 
 use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Functional\Subscriptions\Access\Controls\SubscriptionControl;
+use Functional\Subscriptions\Console\Commands\LinkSyncSubscriber;
 use Functional\Subscriptions\Events\SubscriptionRevoked;
 use Functional\Subscriptions\Listeners\PurgeOnRevoke;
 use Functional\Subscriptions\Models\Subscription;
@@ -20,6 +21,10 @@ class SubscriptionsServiceProvider extends LayerServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+
+            $this->commands([
+                LinkSyncSubscriber::class
+            ]);
         }
 
         $this->bootRouting();
