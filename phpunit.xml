@@ -7,9 +7,6 @@
     <testsuite name="technical/oauth-server">
       <directory>technical/oauth-server/tests</directory>
     </testsuite>
-    <testsuite name="dailyapps/portal-shared-schema">
-      <directory>dailyapps/portal-shared-schema/tests</directory>
-    </testsuite>
     <testsuite name="functional/subscriptions">
       <directory>functional/subscriptions/tests</directory>
     </testsuite>
@@ -18,6 +15,12 @@
     </testsuite>
     <testsuite name="dailyapps/event-distribution">
       <directory>dailyapps/event-distribution/tests</directory>
+    </testsuite>
+    <testsuite name="functional/users">
+      <directory>functional/users/tests</directory>
+    </testsuite>
+    <testsuite name="dailyapps/portal-sync-client">
+      <directory>dailyapps/portal-sync-client/tests</directory>
     </testsuite>
   </testsuites>
   <source>

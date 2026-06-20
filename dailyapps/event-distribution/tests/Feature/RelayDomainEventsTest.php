@@ -2,7 +2,7 @@
 
 namespace Dailyapps\EventDistribution\Tests\Feature;
 
-use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
+use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Dailyapps\EventDistribution\Jobs\DeliverDomainEvent;
 use Dailyapps\EventDistribution\Jobs\RelayDomainEvents;
 use Dailyapps\EventDistribution\Models\DomainEventRecord;
@@ -38,7 +38,7 @@ class RelayDomainEventsTest extends TestCase
 
         Queue::fake();
 
-        (new RelayDomainEvents)->handle(app(SubscriberResolver::class));
+        (new RelayDomainEvents)->handle(app(SyncDirectory::class));
 
         Queue::assertPushed(DeliverDomainEvent::class, 1);
         Queue::assertPushedOn('sync', DeliverDomainEvent::class);
@@ -65,7 +65,7 @@ class RelayDomainEventsTest extends TestCase
 
         Queue::fake();
 
-        (new RelayDomainEvents)->handle(app(SubscriberResolver::class));
+        (new RelayDomainEvents)->handle(app(SyncDirectory::class));
 
         Queue::assertNotPushed(DeliverDomainEvent::class);
     }
@@ -94,7 +94,7 @@ class RelayDomainEventsTest extends TestCase
 
         Queue::fake();
 
-        (new RelayDomainEvents)->handle(app(SubscriberResolver::class));
+        (new RelayDomainEvents)->handle(app(SyncDirectory::class));
 
         Queue::assertNotPushed(DeliverDomainEvent::class);
     }

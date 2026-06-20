@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Http;
  * Delivers one domain event to one subscriber as a signed webhook.
  */
 #[Tries(3)]
-#[Backoff(10, 30)]
+#[Backoff(10, 30, 60)]
 class DeliverDomainEvent implements ShouldQueue
 {
     use Dispatchable;

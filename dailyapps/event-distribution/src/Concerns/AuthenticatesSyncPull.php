@@ -2,7 +2,7 @@
 
 namespace Dailyapps\EventDistribution\Concerns;
 
-use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
+use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Dailyapps\EventDistribution\Support\HmacSigner;
 use Dailyapps\EventDistribution\Values\SnapshotScope;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
  */
 trait AuthenticatesSyncPull
 {
-    protected function authorizeSyncPull(Request $request, SnapshotResolver $resolver): SnapshotScope
+    protected function authorizeSyncPull(Request $request, SyncDirectory $directory): SnapshotScope
     {
         $applicationId = $request->header('X-Application');
 
@@ -21,7 +21,7 @@ trait AuthenticatesSyncPull
             abort(401);
         }
 
-        $scope = $resolver->authorize($applicationId);
+        $scope = $directory->scopeFor($applicationId);
 
         if ($scope === null) {
             abort(401);

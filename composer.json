@@ -10,7 +10,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.5",
-        "dailyapps/portal-shared-schema": "*",
         "functional/subscriptions": "*",
         "functional/users": "*",
         "laravel/framework": "^13.0",
@@ -25,6 +24,7 @@
         "xefi/laravel-osdd": "^2.0",
         "technical/documentation": "*",
         "dailyapps/event-distribution": "*",
+        "dailyapps/portal-sync-client": "*",
         "technical/authentication": "*",
         "technical/oauth-server": "*",
         "functional/organizations": "*",

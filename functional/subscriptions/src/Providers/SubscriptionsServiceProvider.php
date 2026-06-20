@@ -2,17 +2,13 @@
 
 namespace Functional\Subscriptions\Providers;
 
-use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
-use Dailyapps\EventDistribution\Contracts\SubscriberResolver;
+use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Functional\Subscriptions\Access\Controls\SubscriptionControl;
-use Functional\Subscriptions\Events\SubscriptionGranted;
 use Functional\Subscriptions\Events\SubscriptionRevoked;
-use Functional\Subscriptions\Listeners\BackfillOnGrant;
 use Functional\Subscriptions\Listeners\PurgeOnRevoke;
 use Functional\Subscriptions\Models\Subscription;
 use Functional\Subscriptions\Policies\SubscriptionPolicy;
-use Functional\Subscriptions\Resolver\SnapshotScopeResolver;
-use Functional\Subscriptions\Resolver\SubscriptionResolver;
+use Functional\Subscriptions\Resolver\SyncDirectoryFromSubscriptions;
 use Illuminate\Support\Facades\Event;
 use Technical\AccessControl\ControlRegistry;
 use Technical\Osdd\GateRegistry;
@@ -34,8 +30,7 @@ class SubscriptionsServiceProvider extends LayerServiceProvider
 
     public function register(): void
     {
-        $this->app->bind(SubscriberResolver::class, SubscriptionResolver::class);
-        $this->app->bind(SnapshotResolver::class, SnapshotScopeResolver::class);
+        $this->app->bind(SyncDirectory::class, SyncDirectoryFromSubscriptions::class);
     }
 
     private function bootRouting(): void
@@ -61,10 +56,6 @@ class SubscriptionsServiceProvider extends LayerServiceProvider
 
     private function registerSyncListeners(): void
     {
-        // Subscription lifecycle is the "semantic events" carve-out of ARCHITECTURE-SYNC
-        // §3.1 — wired explicitly here, NOT through the generic SyncableRegistry capture
-        // (a Subscription is not a SyncableAggregate). Do not try to unify the two.
-        Event::listen(SubscriptionGranted::class, BackfillOnGrant::class);
         Event::listen(SubscriptionRevoked::class, PurgeOnRevoke::class);
     }
 }

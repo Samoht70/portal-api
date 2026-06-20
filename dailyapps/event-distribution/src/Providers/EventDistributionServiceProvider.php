@@ -4,7 +4,7 @@ namespace Dailyapps\EventDistribution\Providers;
 
 use Dailyapps\EventDistribution\Listeners\RecordAggregateDeleted;
 use Dailyapps\EventDistribution\Listeners\RecordAggregateUpserted;
-use Dailyapps\EventDistribution\SyncableRegistry;
+use Dailyapps\EventDistribution\SyncAggregates;
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
 /**
@@ -14,7 +14,7 @@ class EventDistributionServiceProvider extends LayerServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(SyncableRegistry::class);
+        $this->overrideConfigFrom(__DIR__.'/../../config/sync.php', 'sync');
     }
 
     public function boot(): void
@@ -25,17 +25,17 @@ class EventDistributionServiceProvider extends LayerServiceProvider
         $this->bootRouting();
     }
 
+    /**
+     * Wire create/update/delete capture into the outbox for every model declared in
+     * config('sync.aggregates').
+     */
     private function bootOutboxCapture(): void
     {
-        $this->app->booted(function () {
-            $models = $this->app->make(SyncableRegistry::class)->models();
-
-            foreach ($models as $model) {
-                $model::created(RecordAggregateUpserted::class);
-                $model::updated(RecordAggregateUpserted::class);
-                $model::deleted(RecordAggregateDeleted::class);
-            }
-        });
+        foreach (SyncAggregates::models() as $model) {
+            $model::created(RecordAggregateUpserted::class);
+            $model::updated(RecordAggregateUpserted::class);
+            $model::deleted(RecordAggregateDeleted::class);
+        }
     }
 
     private function bootRouting(): void
