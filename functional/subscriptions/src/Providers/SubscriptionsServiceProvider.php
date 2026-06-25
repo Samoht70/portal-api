@@ -5,6 +5,7 @@ namespace Functional\Subscriptions\Providers;
 use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Functional\Subscriptions\Access\Controls\SubscriptionControl;
 use Functional\Subscriptions\Console\Commands\LinkSyncSubscriber;
+use Functional\Subscriptions\Listeners\PullOnGrant;
 use Functional\Subscriptions\Listeners\PurgeOnRevoke;
 use Functional\Subscriptions\Models\Subscription;
 use Functional\Subscriptions\Policies\SubscriptionPolicy;
@@ -59,6 +60,7 @@ class SubscriptionsServiceProvider extends LayerServiceProvider
 
     private function registerSyncListeners(): void
     {
+        Subscription::created(PullOnGrant::class);
         Subscription::deleted(PurgeOnRevoke::class);
     }
 }
