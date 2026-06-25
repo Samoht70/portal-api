@@ -5,12 +5,10 @@ namespace Functional\Subscriptions\Providers;
 use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Functional\Subscriptions\Access\Controls\SubscriptionControl;
 use Functional\Subscriptions\Console\Commands\LinkSyncSubscriber;
-use Functional\Subscriptions\Events\SubscriptionRevoked;
 use Functional\Subscriptions\Listeners\PurgeOnRevoke;
 use Functional\Subscriptions\Models\Subscription;
 use Functional\Subscriptions\Policies\SubscriptionPolicy;
 use Functional\Subscriptions\Resolver\SyncDirectoryFromSubscriptions;
-use Illuminate\Support\Facades\Event;
 use Technical\AccessControl\ControlRegistry;
 use Technical\Osdd\GateRegistry;
 use Xefi\LaravelOSDD\LayerServiceProvider;
@@ -61,6 +59,6 @@ class SubscriptionsServiceProvider extends LayerServiceProvider
 
     private function registerSyncListeners(): void
     {
-        Event::listen(SubscriptionRevoked::class, PurgeOnRevoke::class);
+        Subscription::deleted(PurgeOnRevoke::class);
     }
 }
