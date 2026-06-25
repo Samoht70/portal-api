@@ -12,17 +12,12 @@ use Tests\TestCase;
 
 class PullTenantTest extends TestCase
 {
-    private const string SECRET = 's3cret';
-
     protected function setUp(): void
     {
         parent::setUp();
 
         config([
-            'portal-sync.replica' => true,
             'portal-sync.mother_url' => 'https://mother.test',
-            'portal-sync.application_id' => 'app-1',
-            'portal-sync.sync_secret' => self::SECRET,
             'portal-sync.snapshot_types' => ['replica_sites'],
         ]);
 

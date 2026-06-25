@@ -28,7 +28,7 @@ class PullTenant implements ShouldQueue
             $cursor = null;
 
             do {
-                $path = '/api/sync/snapshot?type='.$type.'&tenant='.rawurlencode($this->clientId);
+                $path = '/api/sync/snapshot?type='.rawurlencode($type).'&tenant='.rawurlencode($this->clientId);
 
                 if ($cursor !== null) {
                     $path .= '&cursor='.rawurlencode($cursor);
