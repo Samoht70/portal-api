@@ -8,6 +8,7 @@ use Functional\Organizations\Models\Client;
 use Functional\Organizations\Models\Site;
 use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
 use Functional\Subscriptions\Models\Subscription;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
@@ -140,5 +141,44 @@ class SyncSnapshotTest extends TestCase
         $response = $this->signedGet('/api/sync/snapshot?type=unknown', $applicationId);
 
         $response->assertStatus(422);
+    }
+
+    public function test_snapshot_tenant_filter_returns_only_that_tenant(): void
+    {
+        // Prevent delivery jobs from making real HTTP calls when the second Subscription is created.
+        Queue::fake();
+
+        $clientA = Client::factory()->create();
+        $clientB = Client::factory()->create();
+        $applicationId = $this->subscribe($clientA);
+
+        // Second in-scope client on the same application.
+        Subscription::factory()->create([
+            'client_id' => $clientB->getKey(),
+            'application_id' => $applicationId,
+        ]);
+
+        $siteA = Site::factory()->create(['client_id' => $clientA->getKey()]);
+        $siteB = Site::factory()->create(['client_id' => $clientB->getKey()]);
+
+        $response = $this->signedGet('/api/sync/snapshot?type=sites&tenant='.$clientA->getKey(), $applicationId);
+
+        $response->assertOk();
+
+        $ids = collect($response->json('data'))->pluck('id')->all();
+
+        $this->assertContains($siteA->getKey(), $ids);
+        $this->assertNotContains($siteB->getKey(), $ids);
+    }
+
+    public function test_snapshot_tenant_outside_scope_is_forbidden(): void
+    {
+        $subscribed = Client::factory()->create();
+        $foreign = Client::factory()->create();
+        $applicationId = $this->subscribe($subscribed);
+
+        $response = $this->signedGet('/api/sync/snapshot?type=sites&tenant='.$foreign->getKey(), $applicationId);
+
+        $response->assertStatus(403);
     }
 }

@@ -9,12 +9,6 @@ use Dailyapps\EventDistribution\SyncAggregates;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-/**
- * Serves a cursor-paginated snapshot of an aggregate type, scoped to the rows the
- * authenticated child Application is allowed to read. Each row is stamped with
- * `_sync_sequence` (the current outbox watermark) and `_sync_tenant`, which seed the
- * child's per-row sync floor so live events and replays order correctly after bootstrap.
- */
 class SyncSnapshot
 {
     use AuthenticatesSyncPull;
@@ -33,7 +27,18 @@ class SyncSnapshot
             abort(422);
         }
 
-        $query = $class::syncSnapshotQuery($scope->clientIds);
+        $clientIds = $scope->clientIds;
+        $tenant = $request->query('tenant');
+
+        if ($tenant !== null) {
+            if (! in_array($tenant, $clientIds, true)) {
+                abort(403);
+            }
+
+            $clientIds = [$tenant];
+        }
+
+        $query = $class::syncSnapshotQuery($clientIds);
 
         $since = $request->query('since');
 
