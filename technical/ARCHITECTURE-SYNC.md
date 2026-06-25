@@ -33,10 +33,11 @@
 >   tables `processed_events`, `replica_sync_state` et le plancher `last_applied_sequence`
 >   par agrégat.
 > - **Deux chemins de données** (plus trois) : push live (webhook) + **un seul pull
->   snapshot** servant à l'amorçage, au reconcile ET au rattrapage d'une nouvelle
->   souscription. Le job `BackfillSubscriber` et le listener `BackfillOnGrant` sont
->   **supprimés** ; un revoke émet **un** event de contrôle `subscription.revoked` → l'enfant
->   purge par `_sync_tenant`.
+>   snapshot** servant à l'amorçage, au reconcile et au pull ciblé sur grant. Un **grant**
+>   émet un event de contrôle `subscription.granted` (`PullOnGrant`) → l'enfant lance un
+>   **pull ciblé** du tenant (`PullTenant`) via `GET /api/sync/snapshot?tenant=<client_id>`
+>   (sans `since`, sans tombstone) — symétrique du revoke/`PurgeOnRevoke`. Un **revoke** émet
+>   **un** event de contrôle `subscription.revoked` → l'enfant purge par `_sync_tenant`.
 > - **Câblage par config.** `SyncableRegistry` (runtime) → `config/sync.php` (map
 >   `aggregates`) lue via `SyncAggregates`. Les **deux** interfaces de résolution
 >   (`SubscriberResolver` + `SnapshotResolver`) sont fusionnées en **une**
@@ -314,20 +315,23 @@ destinataire. (`tenant_scope = null` ⇒ toutes les `Application` `sync_enabled`
 ### 3.4 Amorçage / catch-up et cycle de vie des souscriptions
 **Un seul mécanisme de pull** : l'endpoint sync dédié authentifié HMAC `GET /api/sync/snapshot`
 (`SyncSnapshot`, dans `event-distribution`), paginé par curseur, **scopé via `scopeFor()`**
-à l'ensemble des `client_id` lisibles par l'`Application`. Pas de second endpoint
-`watermark` : **chaque ligne de snapshot porte déjà son `_sync_sequence`** (la `sequence`
-courante de l'outbox au moment du snapshot), qui devient le plancher de cette ligne. Une fois
-l'enfant amorcé, le flux live applique tout événement de `sequence` plus haute et ignore les
-rejeux — la course snapshot/stream se ferme par la règle par ligne du 3.3, sans watermark
-global. Ce même pull sert pour **trois usages** : amorçage initial (`sync:bootstrap`),
-reconcile (`sync:reconcile`, cf. 3.6) et rattrapage d'une nouvelle souscription.
+à l'ensemble des `client_id` lisibles par l'`Application`. Accepte un paramètre optionnel
+`?tenant=<client_id>` (validé contre le scope de l'appelant — 403 si hors scope) pour
+restreindre le snapshot à un seul tenant (utilisé par `PullTenant` sur grant). Pas de second
+endpoint `watermark` : **chaque ligne de snapshot porte déjà son `_sync_sequence`** (la
+`sequence` courante de l'outbox au moment du snapshot), qui devient le plancher de cette
+ligne. Une fois l'enfant amorcé, le flux live applique tout événement de `sequence` plus
+haute et ignore les rejeux — la course snapshot/stream se ferme par la règle par ligne du
+3.3, sans watermark global. Ce même pull sert pour **trois usages** : amorçage initial
+(`sync:bootstrap`), reconcile (`sync:reconcile`, cf. 3.6) et pull ciblé sur grant
+(`PullTenant`).
 
 Le pivot `Client ↔ Application` étant **explicite**, les transitions de souscription sont des
 opérations de première classe :
-- **Org souscrit à une app** → l'enfant rattrape via le **pull snapshot** (scopé à l'org
-  désormais lisible). Il n'y a **plus** de job `BackfillSubscriber` ni de listener
-  `BackfillOnGrant` qui *poussaient* l'état courant : un grant est un simple ré-élargissement
-  du scope de pull, et le flux live couvre la suite.
+- **Org souscrit à une app** → `PullOnGrant` émet un event de contrôle `subscription.granted`
+  vers l'enfant → `HandleDomainEvent` dispatche `PullTenant` → pull ciblé
+  `GET /api/sync/snapshot?tenant=<client_id>` (sans `since`, sans tombstone). Symétrique du
+  revoke/`PurgeOnRevoke`.
 - **Org se désabonne** → un **unique event de contrôle** `subscription.revoked`
   (`Functional\Subscriptions\Listeners\PurgeOnRevoke` → `DeliverDomainEvent` vers
   `applicationFor()`, qui reste joignable hors souscription) → l'enfant
@@ -395,11 +399,14 @@ modifiables. La garde est donc **par colonne**, pas globale :
   ne référencent **aucun modèle de la mère** (type `Model&SyncableAggregate`).
 - **`functional/subscriptions`** (layer fonctionnel) : pivot M2M `Client ↔ Application` + son
   modèle/ressource REST + l'implémentation `SyncDirectoryFromSubscriptions` de `SyncDirectory` ;
-  émet `SubscriptionRevoked`, écouté par `PurgeOnRevoke` qui pousse l'event de contrôle
-  `subscription.revoked` vers l'enfant concerné. Porte aussi les coordonnées de livraison de
+  lie directement, dans son provider, `PullOnGrant` sur l'event Eloquent `created` et
+  `PurgeOnRevoke` sur `deleted` du modèle `Subscription` (plus de classes d'event
+  `SubscriptionGranted`/`SubscriptionRevoked` ni de `$dispatchesEvents` : liaison directe aux
+  events du modèle). `PullOnGrant` pousse l'event de contrôle `subscription.granted` →
+  l'enfant lance `PullTenant` (pull ciblé `?tenant=<client_id>`, sans `since`) ;
+  `PurgeOnRevoke` pousse `subscription.revoked`. Porte aussi les coordonnées de livraison de
   l'`Application` (`ApplicationSyncEndpoint` : `endpoint_url`, `secret` `#[Hidden]`,
-  `sync_enabled`) — table sœur dédiée pour isoler le secret. (Il n'y a plus de
-  `SubscriptionGranted`/`BackfillSubscriber` : un grant est rattrapé par le pull snapshot.)
+  `sync_enabled`) — table sœur dédiée pour isoler le secret.
 - **Capture par layer fonctionnel** : les modèles syncables (`Client`, `Site`, `User`)
   portent le trait `SyncsToReplica` et implémentent `SyncableAggregate` (avec leur
   `syncTenantScope()` : `Client` = sa clé ; `Site` = `client_id` ; `User` = via
@@ -488,9 +495,10 @@ Ordre recommandé (chaque étape est validable indépendamment) :
    ✅ critère atteint : `resolve('users', $clientId)` rend les `Application` souscrites + actives.
    **Différé à plus tard** : les **coordonnées de livraison** de l'`Application` (lien
    `oauth_client` 1:1, `endpoint_url`, secret HMAC, `sync_enabled`) → incrément livraison ;
-   `Subscriber` ne porte donc encore que `applicationId`. Les **événements**
-   `SubscriptionGranted`/`SubscriptionRevoked` sont différés (aucun consommateur avant
-   l'outbox).
+   `Subscriber` ne porte donc encore que `applicationId`. Les **réactions de cycle de vie**
+   (grant/revoke) sont différées (aucun consommateur avant l'outbox) ; elles ont finalement
+   atterri en liaisons directes aux events Eloquent `created`/`deleted` du modèle
+   `Subscription` (`PullOnGrant`/`PurgeOnRevoke`), sans classe d'event dédiée.
 3. **[FAIT, simplifié 2026-06-20]** **Outbox + capture par events Eloquent** :
    `dailyapps/event-distribution` — table `domain_events` + `DomainEventRecord`, interface
    `SyncableAggregate`, trait `SyncsToReplica`, listeners `RecordAggregateUpserted`/
@@ -522,10 +530,11 @@ Ordre recommandé (chaque étape est validable indépendamment) :
      `GET /api/sync/snapshot` (commande `sync:bootstrap`). Chaque ligne porte son
      `_sync_sequence` → plancher par ligne. Plus d'endpoint `/api/sync/watermark` ni de
      plancher par agrégat.
-   - **Cycle de souscription** : un **grant** est rattrapé par le **pull** (élargissement du
-     scope). Un **revoke** émet **un** event de contrôle `subscription.revoked`
-     (`PurgeOnRevoke`) → l'enfant purge par `_sync_tenant`. Les jobs `BackfillSubscriber` /
-     listener `BackfillOnGrant` / l'event `SubscriptionGranted` sont **supprimés**.
+   - **Cycle de souscription** : un **grant** émet l'event de contrôle `subscription.granted`
+     (`PullOnGrant`) → l'enfant dispatche `PullTenant` (pull ciblé
+     `GET /api/sync/snapshot?tenant=<client_id>`, sans `since`, sans tombstone) — symétrique
+     du revoke. Un **revoke** émet **un** event de contrôle `subscription.revoked`
+     (`PurgeOnRevoke`) → l'enfant purge par `_sync_tenant`.
    - **Reconcile** : `GET /api/sync/checksum` (empreinte cheap count + last_updated_at) +
      `sync:reconcile` (delta horaire / `--full` nocturne) — re-pull via le même `ReplicaWriter`.
 6. **[FAIT]** **Sécurité** : test négatif (mauvaise signature → 401), test d'isolation
