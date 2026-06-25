@@ -8,8 +8,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dailyapps\\PortalSync\\": "src/",
-            "Dailyapps\\PortalSync\\Database\\Seeders\\": "database/seeders/"
+            "Dailyapps\\PortalSync\\": "src/"
         }
     },
     "autoload-dev": {
