@@ -1,7 +1,8 @@
 <?php
 
-namespace Functional\Subscriptions\Listeners\Concerns;
+namespace Functional\Subscriptions\Sync;
 
+use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Dailyapps\EventDistribution\Jobs\DeliverDomainEvent;
 use Dailyapps\EventDistribution\Models\DomainEventRecord;
 use Dailyapps\EventDistribution\Outbox\EventEnvelope;
@@ -11,11 +12,11 @@ use Illuminate\Support\Str;
 /**
  * Pushes a subscription control event to the affected subscriber, when one exists.
  */
-trait PushesSubscriptionControlEvent
+final readonly class SubscriptionControlEmitter
 {
-    use CarriesSubscriptionScope;
+    public function __construct(private SyncDirectory $directory) {}
 
-    private function pushControlEvent(Subscription $subscription, string $eventType): void
+    public function emit(Subscription $subscription, string $eventType): void
     {
         $subscriber = $this->directory->applicationFor($this->applicationId($subscription));
 
@@ -38,5 +39,15 @@ trait PushesSubscriptionControlEvent
         );
 
         DeliverDomainEvent::dispatch($envelope, $subscriber->endpointUrl, $subscriber->secret);
+    }
+
+    private function clientId(Subscription $subscription): string
+    {
+        return $subscription->getAttribute($subscription->client()->getForeignKeyName());
+    }
+
+    private function applicationId(Subscription $subscription): string
+    {
+        return $subscription->getAttribute($subscription->application()->getForeignKeyName());
     }
 }
