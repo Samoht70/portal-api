@@ -3,25 +3,25 @@
 namespace Dailyapps\PortalSync\Http\Controllers;
 
 use Dailyapps\PortalSync\Ingestion\ReplicaWriter;
+use Dailyapps\PortalSync\Jobs\PullTenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Child-side webhook receiver for mother-emitted domain events.
- *
- * Verifies the HMAC, drops bodies older than the replay window, then either applies
- * a full-state upsert (idempotent + ordered by the writer's `_sync_sequence` gate) or
- * purges a revoked tenant. There is no dedup/watermark bookkeeping: the sequence gate
- * in ReplicaWriter is the whole idempotency story.
+ * Child-side webhook receiver: verifies the HMAC, then purges a revoked tenant, pulls a granted tenant, or upserts full replica state.
  */
 class HandleDomainEvent
 {
     /**
-     * Wire event type for the revoke control signal (kept in step with the mother's
-     * PurgeOnRevoke::EVENT_TYPE — see technical/ARCHITECTURE-SYNC.md).
+     * Wire event type for the revoke control signal (matches the mother's PurgeOnRevoke::EVENT_TYPE — see technical/ARCHITECTURE-SYNC.md).
      */
     public const string REVOKE_EVENT_TYPE = 'subscription.revoked';
+
+    /**
+     * Wire event type for the grant control signal (matches the mother's PullOnGrant::EVENT_TYPE).
+     */
+    public const string GRANT_EVENT_TYPE = 'subscription.granted';
 
     public function __construct(private readonly ReplicaWriter $writer) {}
 
@@ -46,6 +46,12 @@ class HandleDomainEvent
             $this->purge((string) $envelope['payload']['client_id']);
 
             return response()->json(['status' => 'purged']);
+        }
+
+        if ($envelope['event_type'] === self::GRANT_EVENT_TYPE) {
+            PullTenant::dispatch((string) $envelope['payload']['client_id']);
+
+            return response()->json(['status' => 'pulling']);
         }
 
         $payload = $envelope['payload'];

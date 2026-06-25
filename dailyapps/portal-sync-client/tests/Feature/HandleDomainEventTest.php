@@ -3,9 +3,11 @@
 namespace Dailyapps\PortalSync\Tests\Feature;
 
 use Dailyapps\PortalSync\Http\Controllers\HandleDomainEvent;
+use Dailyapps\PortalSync\Jobs\PullTenant;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -14,7 +16,8 @@ use Tests\TestCase;
 /**
  * Child-side ingestion: a signed full-state event is upserted into the replica,
  * gated by the per-row `_sync_sequence` so replays and out-of-order events are no-ops,
- * and a `subscription.revoked` control event purges a tenant by `_sync_tenant`.
+ * and a `subscription.revoked` control event purges a tenant by `_sync_tenant`,
+ * and a `subscription.granted` control event queues a `PullTenant` job.
  */
 class HandleDomainEventTest extends TestCase
 {
@@ -146,6 +149,21 @@ class HandleDomainEventTest extends TestCase
         $this->assertNull(DB::table('replica_clients')->where('id', $theirs)->value('deleted_at'));
     }
 
+    public function test_a_grant_control_event_queues_a_tenant_pull(): void
+    {
+        Queue::fake();
+
+        $clientId = (string) Str::uuid();
+
+        $response = $this->dispatch($this->grantEnvelope($clientId));
+
+        $this->assertSame('pulling', $response->getData(true)['status']);
+
+        Queue::assertPushed(PullTenant::class, function (PullTenant $job) use ($clientId) {
+            return (fn () => $this->clientId)->call($job) === $clientId;
+        });
+    }
+
     /**
      * @param  array<string, mixed>  $envelope
      */
@@ -183,6 +201,24 @@ class HandleDomainEventTest extends TestCase
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function grantEnvelope(string $clientId): array
+    {
+        return [
+            'id' => (string) Str::uuid(),
+            'sequence' => 100,
+            'aggregate_type' => 'subscription',
+            'aggregate_id' => $clientId,
+            'event_type' => HandleDomainEvent::GRANT_EVENT_TYPE,
+            'tenant_scope' => $clientId,
+            'occurred_at' => now()->toIso8601String(),
+            'schema_version' => 1,
+            'payload' => ['client_id' => $clientId],
         ];
     }
 
