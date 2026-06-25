@@ -21,11 +21,10 @@ class PortalSyncServiceProvider extends LayerServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([BootstrapReplica::class, ReconcileFromMother::class]);
-
-            $this->loadSeeders([
-                CoreReplicaSeeder::class
-            ], 0);
+            $this->commands([
+                BootstrapReplica::class,
+                ReconcileFromMother::class,
+            ]);
         }
 
         if (config('portal-sync.replica')) {

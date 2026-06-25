@@ -35,12 +35,12 @@ class ApplicationsServiceProvider extends LayerServiceProvider
                 EssentioSeeder::class,
                 ProductivitySeeder::class,
                 //                AutoSeeder::class,
-            ], 1);
+            ], 0);
 
             $this->loadSeeders([
                 RoleDefinitionSeeder::class,
                 ApplicationRoleSeeder::class,
-            ], 2);
+            ], 1);
         }
 
         $this->bootRouting();
