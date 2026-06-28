@@ -14231,7 +14231,7 @@
             "dist": {
                 "type": "path",
                 "url": "./technical/filament",
-                "reference": "6269b6b5eda8fbbd331a2f48a31833ce228907d0"
+                "reference": "fcb1e3f6901446d1838cc4ffabf4c9ac715ce0f5"
             },
             "require": {
                 "filament/filament": "^5.0",
@@ -14245,7 +14245,8 @@
             "extra": {
                 "laravel": {
                     "providers": [
-                        "Technical\\Filament\\Providers\\FilamentServiceProvider"
+                        "Technical\\Filament\\Providers\\FilamentServiceProvider",
+                        "Technical\\Filament\\Providers\\AdminPanelProvider"
                     ]
                 }
             },
