@@ -15,10 +15,17 @@ class SitesTable
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('client.name')->searchable()->sortable()->label('Client'),
-                TextColumn::make('country')->searchable(),
-                TextColumn::make('created_at')->dateTime()->sortable()->toggleable(),
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('client.name')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Client'),
+
+                TextColumn::make('country')
+                    ->searchable(),
             ])
             ->recordActions([EditAction::make()])
             ->toolbarActions([

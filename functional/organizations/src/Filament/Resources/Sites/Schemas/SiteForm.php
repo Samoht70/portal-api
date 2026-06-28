@@ -16,9 +16,18 @@ class SiteForm
                 ->searchable()
                 ->preload()
                 ->required(),
-            TextInput::make('name')->required()->maxLength(255),
-            TextInput::make('country')->required()->maxLength(255),
-            TextInput::make('country_alpha')->required()->maxLength(2),
+
+            TextInput::make('name')
+                ->required()
+                ->maxLength(255),
+
+            TextInput::make('country')
+                ->required()
+                ->maxLength(255),
+
+            TextInput::make('country_alpha')
+                ->required()
+                ->maxLength(2),
         ]);
     }
 }

@@ -28,7 +28,9 @@ class SitesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')
+                    ->searchable(),
+
                 TextColumn::make('country'),
             ])
             ->headerActions([CreateAction::make()])

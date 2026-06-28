@@ -14,9 +14,13 @@ class ClientsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('sites_count')->counts('sites')->label('Sites'),
-                TextColumn::make('created_at')->dateTime()->sortable()->toggleable(),
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('sites_count')
+                    ->counts('sites')
+                    ->label('Sites'),
             ])
             ->recordActions([EditAction::make()])
             ->toolbarActions([
