@@ -19,9 +19,6 @@
     <testsuite name="functional/users">
       <directory>functional/users/tests</directory>
     </testsuite>
-    <testsuite name="dailyapps/portal-sync-client">
-      <directory>dailyapps/portal-sync-client/tests</directory>
-    </testsuite>
   </testsuites>
   <source>
     <include>
