@@ -4,6 +4,7 @@ namespace Functional\Applications\Filament\Resources\Applications\RelationManage
 
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -21,12 +22,11 @@ class RolesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                TextColumn::make('definition.name')
-                    ->label('Role'),
+                TextColumn::make('definition.slug')
+                    ->label('Role definition'),
 
-                TextColumn::make('is_default')
-                    ->label('Default')
-                    ->badge(),
+                IconColumn::make('is_default')
+                    ->boolean(),
             ]);
     }
 }

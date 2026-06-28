@@ -6,8 +6,6 @@ use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Functional\Applications\Filament\Resources\Applications\Pages\CreateApplication;
-use Functional\Applications\Filament\Resources\Applications\Pages\EditApplication;
 use Functional\Applications\Filament\Resources\Applications\Pages\ListApplications;
 use Functional\Applications\Filament\Resources\Applications\RelationManagers\RolesRelationManager;
 use Functional\Applications\Filament\Resources\Applications\Schemas\ApplicationForm;
@@ -45,8 +43,6 @@ class ApplicationResource extends Resource
     {
         return [
             'index' => ListApplications::route('/'),
-            'create' => CreateApplication::route('/create'),
-            'edit' => EditApplication::route('/{record}/edit'),
         ];
     }
 }

@@ -6,8 +6,6 @@ use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Functional\Applications\Filament\Resources\Packs\Pages\CreatePack;
-use Functional\Applications\Filament\Resources\Packs\Pages\EditPack;
 use Functional\Applications\Filament\Resources\Packs\Pages\ListPacks;
 use Functional\Applications\Filament\Resources\Packs\Schemas\PackForm;
 use Functional\Applications\Filament\Resources\Packs\Tables\PacksTable;
@@ -37,8 +35,6 @@ class PackResource extends Resource
     {
         return [
             'index' => ListPacks::route('/'),
-            'create' => CreatePack::route('/create'),
-            'edit' => EditPack::route('/{record}/edit'),
         ];
     }
 }
