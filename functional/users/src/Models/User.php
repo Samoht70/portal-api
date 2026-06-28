@@ -35,8 +35,6 @@ use Spatie\Permission\Traits\HasRoles;
 #[UseFactory(UserFactory::class)]
 class User extends Authenticatable implements FilamentUser, HasLocalePreference, HasMedia, HasName, MustVerifyEmail, SyncableAggregate
 {
-    protected string $guard_name = 'api';
-
     use HasApiTokens;
     use HasControl;
     use HasFactory;
@@ -46,6 +44,9 @@ class User extends Authenticatable implements FilamentUser, HasLocalePreference,
     use Notifiable;
     use SoftDeletes;
     use SyncsToReplica;
+
+    /** Pins Spatie permission lookups to the 'api' guard so Filament's web-guard switch does not break canAccessPanel(). */
+    protected string $guard_name = 'api';
 
     /**
      * Get the attributes that should be cast.
