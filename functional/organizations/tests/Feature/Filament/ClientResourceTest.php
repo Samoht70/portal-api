@@ -29,13 +29,13 @@ class ClientResourceTest extends TestCase
 
     public function test_admin_can_list_clients(): void
     {
-        Client::factory()->create(['name' => 'Acme']);
+        $client = Client::factory()->create(['name' => 'Acme']);
 
         $this->actingAs($this->admin(['view global clients']), 'web');
 
         Livewire::test(ListClients::class)
-            ->assertOk()
-            ->assertSee('Acme');
+            ->searchTable('Acme')
+            ->assertCanSeeTableRecords([$client]);
     }
 
     public function test_admin_can_create_a_client(): void

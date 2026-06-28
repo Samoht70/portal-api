@@ -30,11 +30,13 @@ class SiteResourceTest extends TestCase
 
     public function test_admin_can_list_sites(): void
     {
-        Site::factory()->create(['name' => 'Paris HQ']);
+        $site = Site::factory()->create(['name' => 'Paris HQ']);
 
         $this->actingAs($this->admin(), 'web');
 
-        Livewire::test(ListSites::class)->assertOk()->assertSee('Paris HQ');
+        Livewire::test(ListSites::class)
+            ->searchTable('Paris HQ')
+            ->assertCanSeeTableRecords([$site]);
     }
 
     public function test_admin_can_create_a_site(): void
@@ -53,6 +55,16 @@ class SiteResourceTest extends TestCase
             ->call('create')
             ->assertHasNoFormErrors();
 
-        $this->assertDatabaseHas('sites', ['name' => 'Lyon']);
+        $this->assertDatabaseHas('sites', ['name' => 'Lyon', 'client_id' => $client->getKey()]);
+    }
+
+    public function test_user_without_view_permission_is_forbidden(): void
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo('access admin panel');
+
+        $this->actingAs($user, 'web');
+
+        Livewire::test(ListSites::class)->assertForbidden();
     }
 }
