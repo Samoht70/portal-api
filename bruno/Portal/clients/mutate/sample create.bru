@@ -1,0 +1,29 @@
+meta {
+  name: sample create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/{{resource}}/{{action}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "mutate": [
+      {
+        "operation": "create",
+        "attributes": {
+          "name": "Test synchro"
+        }
+      }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

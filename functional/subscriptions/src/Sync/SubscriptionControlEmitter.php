@@ -4,7 +4,6 @@ namespace Functional\Subscriptions\Sync;
 
 use Dailyapps\EventDistribution\Contracts\SyncDirectory;
 use Dailyapps\EventDistribution\Jobs\DeliverDomainEvent;
-use Dailyapps\EventDistribution\Models\DomainEventRecord;
 use Dailyapps\EventDistribution\Outbox\EventEnvelope;
 use Functional\Subscriptions\Models\Subscription;
 use Illuminate\Support\Str;
@@ -25,11 +24,10 @@ final readonly class SubscriptionControlEmitter
         }
 
         $clientId = $this->clientId($subscription);
-        $sequence = (int) (DomainEventRecord::query()->max('sequence') ?? 0);
 
         $envelope = EventEnvelope::wrap(
             id: (string) Str::uuid7(),
-            sequence: $sequence,
+            sequence: 0,
             aggregateType: 'subscription',
             aggregateId: $clientId,
             eventType: $eventType,
