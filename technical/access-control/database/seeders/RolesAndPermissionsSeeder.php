@@ -71,6 +71,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Custom
             'access horizon',
+            'access admin panel',
         ];
 
         foreach ($permissions as $permission) {
@@ -111,6 +112,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'update global subscriptions',
             'delete global subscriptions',
             'access horizon',
+            'access admin panel',
         ]);
 
         $administrator = Role::findOrCreate(RoleName::Admin->value);

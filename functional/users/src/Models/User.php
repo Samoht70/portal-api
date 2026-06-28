@@ -7,7 +7,6 @@ use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 use Functional\Applications\Models\ApplicationRole;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -19,18 +18,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Lomkit\Access\Controls\HasControl;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Technical\Filament\Models\PanelUser;
 
 #[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
 #[Hidden(['password'])]
 #[UseFactory(UserFactory::class)]
-class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail, SyncableAggregate
+class User extends PanelUser implements HasLocalePreference, HasMedia, SyncableAggregate
 {
     use HasApiTokens;
     use HasControl;
@@ -41,6 +40,9 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
     use Notifiable;
     use SoftDeletes;
     use SyncsToReplica;
+
+    /** Pins Spatie permission lookups to the 'api' guard so Filament's web-guard switch does not break canAccessPanel(). */
+    protected string $guard_name = 'api';
 
     /**
      * Get the attributes that should be cast.
