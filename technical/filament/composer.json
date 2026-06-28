@@ -21,7 +21,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Technical\\Filament\\Providers\\FilamentServiceProvider"
+                "Technical\\Filament\\Providers\\FilamentServiceProvider",
+                "Technical\\Filament\\Providers\\AdminPanelProvider"
             ]
         }
     }

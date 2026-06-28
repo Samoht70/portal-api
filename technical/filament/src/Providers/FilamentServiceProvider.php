@@ -4,11 +4,7 @@ namespace Technical\Filament\Providers;
 
 use Xefi\LaravelOSDD\LayerServiceProvider;
 
-/** Layer entry point; wires Filament panel registration. */
+/** Layer entry point for the Filament admin panel. */
 class FilamentServiceProvider extends LayerServiceProvider
 {
-    public function register(): void
-    {
-        $this->app->register(AdminPanelProvider::class);
-    }
 }
