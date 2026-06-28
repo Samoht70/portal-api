@@ -2285,10 +2285,11 @@
             "dist": {
                 "type": "path",
                 "url": "./functional/users",
-                "reference": "157b3cd467f619c1c97126bb86f113228c37d1f1"
+                "reference": "02710160afd023a012d530c3afc91402aea0bf21"
             },
             "require": {
                 "technical/authentication": "*",
+                "technical/filament": "*",
                 "xefi/laravel-osdd": "*"
             },
             "type": "layer",
@@ -14231,14 +14232,10 @@
             "dist": {
                 "type": "path",
                 "url": "./technical/filament",
-                "reference": "fcb1e3f6901446d1838cc4ffabf4c9ac715ce0f5"
+                "reference": "c3338672e1a16d462039f727cab10aeb8e5b8809"
             },
             "require": {
                 "filament/filament": "^5.0",
-                "functional/applications": "*",
-                "functional/organizations": "*",
-                "functional/subscriptions": "*",
-                "functional/users": "*",
                 "xefi/laravel-osdd": "*"
             },
             "type": "layer",

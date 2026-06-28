@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "require": {
         "xefi/laravel-osdd": "*",
-        "technical/authentication": "*"
+        "technical/authentication": "*",
+        "technical/filament": "*"
     },
     "autoload": {
         "psr-4": {

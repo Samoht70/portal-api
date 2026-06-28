@@ -4,9 +4,6 @@ namespace Functional\Users\Models;
 
 use Dailyapps\EventDistribution\Concerns\SyncsToReplica;
 use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasName;
-use Filament\Panel;
 use Functional\Applications\Models\ApplicationRole;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
@@ -22,18 +19,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Lomkit\Access\Controls\HasControl;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Technical\Filament\Models\PanelUser;
 
 #[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
 #[Hidden(['password'])]
 #[UseFactory(UserFactory::class)]
-class User extends Authenticatable implements FilamentUser, HasLocalePreference, HasMedia, HasName, MustVerifyEmail, SyncableAggregate
+class User extends PanelUser implements HasLocalePreference, HasMedia, MustVerifyEmail, SyncableAggregate
 {
     use HasApiTokens;
     use HasControl;
@@ -95,16 +92,6 @@ class User extends Authenticatable implements FilamentUser, HasLocalePreference,
     public function preferredLocale(): string
     {
         return $this->language;
-    }
-
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return $this->can('access admin panel');
-    }
-
-    public function getFilamentName(): string
-    {
-        return "{$this->firstname} {$this->lastname}";
     }
 
     public function syncTenantScope(): ?string
