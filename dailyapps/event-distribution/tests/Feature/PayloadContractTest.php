@@ -41,9 +41,7 @@ class PayloadContractTest extends TestCase
             $payload,
         );
 
-        foreach (['password', 'two_factor_secret', 'two_factor_recovery_codes'] as $secret) {
-            $this->assertArrayNotHasKey($secret, $payload);
-        }
+        $this->assertArrayNotHasKey('password', $payload);
     }
 
     /**

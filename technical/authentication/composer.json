@@ -1,6 +1,6 @@
 {
     "name": "technical/authentication",
-    "description": "First-party identity: credential login, email verification, two-factor authentication (Fortify) and Microsoft (Azure AD) login. Issues stateless access tokens.",
+    "description": "First-party identity: credential login, email verification and Microsoft (Azure AD) login. Issues stateless access tokens.",
     "type": "layer",
     "version": "1.0.0",
     "require": {

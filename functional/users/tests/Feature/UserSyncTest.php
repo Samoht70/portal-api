@@ -50,17 +50,10 @@ class UserSyncTest extends TestCase
     {
         $user = $this->userInClient(Client::factory()->create());
 
-        $user->forceFill([
-            'two_factor_secret' => 'TOTPSEED',
-            'two_factor_recovery_codes' => '["recovery-code"]',
-        ])->save();
-
         $payload = $this->eventsFor($user)->last()->payload;
 
         $this->assertArrayHasKey('email', $payload);
         $this->assertArrayNotHasKey('password', $payload);
-        $this->assertArrayNotHasKey('two_factor_secret', $payload);
-        $this->assertArrayNotHasKey('two_factor_recovery_codes', $payload);
     }
 
     public function test_updating_a_user_appends_an_upsert_with_a_higher_sequence(): void

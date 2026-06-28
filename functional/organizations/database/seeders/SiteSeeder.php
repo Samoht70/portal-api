@@ -13,6 +13,8 @@ class SiteSeeder extends Seeder
      */
     public function run(): void
     {
+        // Skip XEFI: it is the canonical tenant owned by CoreReplicaSeeder (its DAILYAPPS
+        // site has a fixed uuid shared with the children).
         Client::query()
             ->where('name', '!=', 'XEFI')
             ->each(function (Client $client) {
