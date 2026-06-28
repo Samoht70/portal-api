@@ -5,9 +5,12 @@ namespace Functional\Subscriptions\Listeners;
 use Functional\Subscriptions\Models\Subscription;
 use Functional\Subscriptions\Sync\SubscriptionControlEmitter;
 
-final readonly class PurgeOnRevoke
+/**
+ * Pushes a `subscription.granted` control event so the new subscriber pulls that tenant now.
+ */
+final readonly class PullOnGrant
 {
-    public const string EVENT_TYPE = 'subscription.revoked';
+    public const string EVENT_TYPE = 'subscription.granted';
 
     public function __construct(private SubscriptionControlEmitter $emitter) {}
 

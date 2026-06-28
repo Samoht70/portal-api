@@ -3,32 +3,31 @@
 namespace Dailyapps\EventDistribution\Http\Controllers;
 
 use Dailyapps\EventDistribution\Concerns\AuthenticatesSyncPull;
-use Dailyapps\EventDistribution\Contracts\SnapshotResolver;
-use Dailyapps\EventDistribution\SyncableRegistry;
+use Dailyapps\EventDistribution\Contracts\SyncDirectory;
+use Dailyapps\EventDistribution\SyncAggregates;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 /**
- * Returns a cheap checksum (row count and max updated_at) of an aggregate type,
- * scoped to the rows the authenticated child Application is allowed to read, so a
- * child can detect drift before pulling a full snapshot.
+ * Returns a cheap fingerprint (row count + max updated_at) of an aggregate type, scoped
+ * to the rows the authenticated child may read, so a child can detect drift before
+ * pulling a full snapshot.
  */
 class SyncChecksum
 {
     use AuthenticatesSyncPull;
 
     public function __construct(
-        private readonly SnapshotResolver $resolver,
-        private readonly SyncableRegistry $registry,
+        private readonly SyncDirectory $directory,
     ) {}
 
     public function __invoke(Request $request): JsonResponse
     {
-        $scope = $this->authorizeSyncPull($request, $this->resolver);
+        $scope = $this->authorizeSyncPull($request, $this->directory);
 
         $type = (string) $request->query('type');
-        $class = $this->registry->modelFor($type);
+        $class = SyncAggregates::modelFor($type);
 
         if ($class === null) {
             abort(422);

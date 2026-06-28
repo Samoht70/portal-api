@@ -2,28 +2,41 @@
 
 namespace Functional\Subscriptions\Tests\Feature;
 
+use Dailyapps\EventDistribution\Jobs\DeliverDomainEvent;
 use Functional\Applications\Models\Application;
 use Functional\Organizations\Models\Client;
+use Functional\Subscriptions\Listeners\PullOnGrant;
+use Functional\Subscriptions\Listeners\PurgeOnRevoke;
 use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
 use Functional\Subscriptions\Models\Subscription;
-use Dailyapps\EventDistribution\Jobs\BackfillSubscriber;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 /**
- * Subscription lifecycle drives sync delivery: granting a subscription backfills
- * the application's sync endpoint with the tenant's state, revoking it purges
- * that endpoint, and nothing happens when the application has no enabled endpoint.
+ * Subscription lifecycle drives sync delivery: granting a subscription nudges
+ * the child to pull that tenant now, while revoking one notifies the
+ * (now-unsubscribed) application with a `subscription.revoked` control event
+ * so it purges that tenant locally.
  */
 class SubscriptionLifecycleTest extends TestCase
 {
-    public function test_granting_a_subscription_backfills_the_subscriber(): void
+    /**
+     * @return array<string, mixed>
+     */
+    private function envelopeOf(DeliverDomainEvent $job): array
+    {
+        return (fn () => $this->envelope)->call($job);
+    }
+
+    public function test_granting_a_subscription_notifies_the_subscriber_to_pull(): void
     {
         $client = Client::factory()->create();
         $application = Application::query()->firstOrFail();
 
         ApplicationSyncEndpoint::factory()->create([
             'application_id' => $application->getKey(),
+            'endpoint_url' => 'https://child.test/sync',
+            'secret' => 'grant-key',
             'sync_enabled' => true,
         ]);
 
@@ -34,57 +47,63 @@ class SubscriptionLifecycleTest extends TestCase
             'application_id' => $application->getKey(),
         ]);
 
-        Queue::assertPushed(BackfillSubscriber::class, 1);
-        Queue::assertPushed(BackfillSubscriber::class, function (BackfillSubscriber $job) use ($client) {
-            $clientId = (fn () => $this->clientId)->call($job);
-            $tombstone = (fn () => $this->tombstone)->call($job);
+        Queue::assertPushed(DeliverDomainEvent::class, 1);
+        Queue::assertPushed(DeliverDomainEvent::class, function (DeliverDomainEvent $job) use ($client) {
+            $envelope = $this->envelopeOf($job);
 
-            return $clientId === $client->getKey() && $tombstone === false;
+            return $envelope['event_type'] === PullOnGrant::EVENT_TYPE
+                && $envelope['payload']['client_id'] === $client->getKey()
+                && $envelope['tenant_scope'] === $client->getKey();
         });
     }
 
-    public function test_revoking_a_subscription_purges_the_subscriber(): void
+    public function test_revoking_a_subscription_notifies_the_subscriber_to_purge(): void
     {
         $client = Client::factory()->create();
         $application = Application::query()->firstOrFail();
 
+        // Subscribe before the sync endpoint exists, so the grant finds no
+        // subscriber and the test isolates the revoke path.
+        $subscription = Subscription::factory()->create([
+            'client_id' => $client->getKey(),
+            'application_id' => $application->getKey(),
+        ]);
+
         ApplicationSyncEndpoint::factory()->create([
             'application_id' => $application->getKey(),
+            'endpoint_url' => 'https://child.test/sync',
+            'secret' => 'revoke-key',
             'sync_enabled' => true,
         ]);
 
-        // Fake before creating: under the sync queue driver, the grant backfill
-        // would otherwise run a real HTTP delivery during setup. The grant job is
-        // a false-tombstone; the revoke we assert below is the true-tombstone.
         Queue::fake();
+
+        $subscription->delete();
+
+        Queue::assertPushed(DeliverDomainEvent::class, 1);
+        Queue::assertPushed(DeliverDomainEvent::class, function (DeliverDomainEvent $job) use ($client) {
+            $envelope = $this->envelopeOf($job);
+
+            return $envelope['event_type'] === PurgeOnRevoke::EVENT_TYPE
+                && $envelope['payload']['client_id'] === $client->getKey()
+                && $envelope['tenant_scope'] === $client->getKey();
+        });
+    }
+
+    public function test_revoking_does_nothing_when_the_application_has_no_enabled_endpoint(): void
+    {
+        $client = Client::factory()->create();
+        $application = Application::query()->firstOrFail();
 
         $subscription = Subscription::factory()->create([
             'client_id' => $client->getKey(),
             'application_id' => $application->getKey(),
         ]);
 
-        $subscription->delete();
-
-        Queue::assertPushed(BackfillSubscriber::class, function (BackfillSubscriber $job) use ($client) {
-            $clientId = (fn () => $this->clientId)->call($job);
-            $tombstone = (fn () => $this->tombstone)->call($job);
-
-            return $clientId === $client->getKey() && $tombstone === true;
-        });
-    }
-
-    public function test_no_backfill_when_the_application_has_no_enabled_sync_endpoint(): void
-    {
-        $client = Client::factory()->create();
-        $application = Application::query()->firstOrFail();
-
         Queue::fake();
 
-        Subscription::factory()->create([
-            'client_id' => $client->getKey(),
-            'application_id' => $application->getKey(),
-        ]);
+        $subscription->delete();
 
-        Queue::assertNotPushed(BackfillSubscriber::class);
+        Queue::assertNotPushed(DeliverDomainEvent::class);
     }
 }

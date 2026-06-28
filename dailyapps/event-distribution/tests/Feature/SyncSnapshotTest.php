@@ -8,13 +8,15 @@ use Functional\Organizations\Models\Client;
 use Functional\Organizations\Models\Site;
 use Functional\Subscriptions\Models\ApplicationSyncEndpoint;
 use Functional\Subscriptions\Models\Subscription;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 /**
- * The mother-side pull endpoints: an authenticated child Application reads the
- * outbox watermark and a client-scoped snapshot of an aggregate type, with each
- * request signed by the per-Application HMAC secret.
+ * The mother-side pull endpoint: an authenticated child Application reads a
+ * client-scoped snapshot of an aggregate type, each request signed by the
+ * per-Application HMAC secret. Every row is stamped with `_sync_sequence` = the
+ * current outbox watermark, which becomes the child's per-row sequence floor.
  */
 class SyncSnapshotTest extends TestCase
 {
@@ -51,21 +53,6 @@ class SyncSnapshotTest extends TestCase
         ]);
     }
 
-    public function test_watermark_returns_the_max_domain_event_sequence(): void
-    {
-        $client = Client::factory()->create();
-        $applicationId = $this->subscribe($client);
-
-        Site::factory()->count(2)->create(['client_id' => $client->getKey()]);
-
-        $expected = (int) DomainEventRecord::query()->max('sequence');
-
-        $response = $this->signedGet('/api/sync/watermark', $applicationId);
-
-        $response->assertOk();
-        $response->assertJson(['sequence' => $expected]);
-    }
-
     public function test_snapshot_is_scoped_to_the_subscribed_clients(): void
     {
         $subscribed = Client::factory()->create();
@@ -83,6 +70,24 @@ class SyncSnapshotTest extends TestCase
 
         $this->assertContains($mine->getKey(), $ids);
         $this->assertNotContains($theirs->getKey(), $ids);
+    }
+
+    public function test_snapshot_rows_are_stamped_with_the_current_watermark(): void
+    {
+        $client = Client::factory()->create();
+        $applicationId = $this->subscribe($client);
+
+        Site::factory()->count(2)->create(['client_id' => $client->getKey()]);
+
+        $watermark = (int) DomainEventRecord::query()->max('sequence');
+
+        $response = $this->signedGet('/api/sync/snapshot?type=sites', $applicationId);
+
+        $response->assertOk();
+
+        foreach ($response->json('data') as $row) {
+            $this->assertSame($watermark, $row['_sync_sequence']);
+        }
     }
 
     public function test_snapshot_since_returns_only_rows_updated_at_or_after_it(): void
@@ -113,7 +118,7 @@ class SyncSnapshotTest extends TestCase
         $client = Client::factory()->create();
         $applicationId = $this->subscribe($client);
 
-        $response = $this->getJson('/api/sync/watermark', [
+        $response = $this->getJson('/api/sync/checksum?type=sites', [
             'X-Application' => $applicationId,
             'X-Signature' => 'not-the-right-signature',
         ]);
@@ -123,7 +128,7 @@ class SyncSnapshotTest extends TestCase
 
     public function test_an_unknown_application_is_rejected(): void
     {
-        $response = $this->signedGet('/api/sync/watermark', 'unknown-application-id');
+        $response = $this->signedGet('/api/sync/checksum?type=sites', 'unknown-application-id');
 
         $response->assertStatus(401);
     }
@@ -136,5 +141,44 @@ class SyncSnapshotTest extends TestCase
         $response = $this->signedGet('/api/sync/snapshot?type=unknown', $applicationId);
 
         $response->assertStatus(422);
+    }
+
+    public function test_snapshot_tenant_filter_returns_only_that_tenant(): void
+    {
+        // Prevent delivery jobs from making real HTTP calls when the second Subscription is created.
+        Queue::fake();
+
+        $clientA = Client::factory()->create();
+        $clientB = Client::factory()->create();
+        $applicationId = $this->subscribe($clientA);
+
+        // Second in-scope client on the same application.
+        Subscription::factory()->create([
+            'client_id' => $clientB->getKey(),
+            'application_id' => $applicationId,
+        ]);
+
+        $siteA = Site::factory()->create(['client_id' => $clientA->getKey()]);
+        $siteB = Site::factory()->create(['client_id' => $clientB->getKey()]);
+
+        $response = $this->signedGet('/api/sync/snapshot?type=sites&tenant='.$clientA->getKey(), $applicationId);
+
+        $response->assertOk();
+
+        $ids = collect($response->json('data'))->pluck('id')->all();
+
+        $this->assertContains($siteA->getKey(), $ids);
+        $this->assertNotContains($siteB->getKey(), $ids);
+    }
+
+    public function test_snapshot_tenant_outside_scope_is_forbidden(): void
+    {
+        $subscribed = Client::factory()->create();
+        $foreign = Client::factory()->create();
+        $applicationId = $this->subscribe($subscribed);
+
+        $response = $this->signedGet('/api/sync/snapshot?type=sites&tenant='.$foreign->getKey(), $applicationId);
+
+        $response->assertStatus(403);
     }
 }

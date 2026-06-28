@@ -1,0 +1,24 @@
+meta {
+  name: sample delete
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{API_URL}}/{{resource}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "resources": [
+      "019f0eb0-0be8-7116-b716-a677b604f887"
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

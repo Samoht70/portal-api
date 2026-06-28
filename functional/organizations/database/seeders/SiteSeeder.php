@@ -14,6 +14,7 @@ class SiteSeeder extends Seeder
     public function run(): void
     {
         Client::query()
+            ->where('name', '!=', 'XEFI')
             ->each(function (Client $client) {
                 Site::factory()
                     ->count(2)
