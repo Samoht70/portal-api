@@ -2,22 +2,25 @@
 
 namespace Functional\Applications\Filament\Resources\Applications;
 
+use BackedEnum;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Functional\Applications\Filament\Resources\Applications\Pages\ListApplications;
 use Functional\Applications\Filament\Resources\Applications\RelationManagers\RolesRelationManager;
 use Functional\Applications\Filament\Resources\Applications\Tables\ApplicationsTable;
 use Functional\Applications\Models\Application;
+use UnitEnum;
 
 /** Filament resource for managing Applications. */
 class ApplicationResource extends Resource
 {
     protected static ?string $model = Application::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cube';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Applications';
+    protected static string|UnitEnum|null $navigationGroup = 'Applications';
 
     public static function table(Table $table): Table
     {
