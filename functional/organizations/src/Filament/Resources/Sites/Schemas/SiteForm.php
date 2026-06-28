@@ -14,6 +14,7 @@ class SiteForm
             Select::make('client_id')
                 ->relationship('client', 'name')
                 ->searchable()
+                ->preload()
                 ->required(),
             TextInput::make('name')->required()->maxLength(255),
             TextInput::make('country')->required()->maxLength(255),

@@ -4,11 +4,11 @@ namespace Functional\Organizations\Filament\Resources\Clients\RelationManagers;
 
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Functional\Organizations\Filament\Resources\Sites\Schemas\SiteForm;
 
 class SitesRelationManager extends RelationManager
 {
@@ -16,7 +16,11 @@ class SitesRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return SiteForm::configure($schema);
+        return $schema->components([
+            TextInput::make('name')->required()->maxLength(255),
+            TextInput::make('country')->required()->maxLength(255),
+            TextInput::make('country_alpha')->required()->maxLength(2),
+        ]);
     }
 
     public function table(Table $table): Table
