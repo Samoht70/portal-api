@@ -19,6 +19,9 @@
     <testsuite name="functional/users">
       <directory>functional/users/tests</directory>
     </testsuite>
+    <testsuite name="functional/applications">
+      <directory>functional/applications/tests</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>

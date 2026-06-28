@@ -1,0 +1,32 @@
+<?php
+
+namespace Functional\Applications\Filament\Resources\Applications\RelationManagers;
+
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+/** Manages roles related to an Application. */
+class RolesRelationManager extends RelationManager
+{
+    protected static string $relationship = 'roles';
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema->components([]);
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('definition.name')
+                    ->label('Role'),
+
+                TextColumn::make('is_default')
+                    ->label('Default')
+                    ->badge(),
+            ]);
+    }
+}
