@@ -11,32 +11,36 @@ use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
- * REST management of subscriptions: authentication, authorization by permission,
- * and tenant isolation (a client-scoped admin only sees/manages its own client's
- * subscriptions via the ClientPerimeter).
+ * REST management of subscriptions. The subscriptions resource exposes only
+ * `details` and `destroy`: a subscription is created or modified through the
+ * owning client (ClientResource's `subscriptions` relation) and deleted
+ * directly on the subscriptions resource. Tenant isolation flows from the
+ * ClientPerimeter, so a client-scoped admin only sees its own client.
  */
 class SubscriptionManagementTest extends TestCase
 {
-    public function test_search_requires_authentication(): void
-    {
-        $this->postJson('/api/subscriptions/search')->assertUnauthorized();
-    }
-
-    public function test_super_admin_creates_a_subscription_via_mutate(): void
+    public function test_super_admin_creates_a_subscription_through_its_client(): void
     {
         Passport::actingAs(User::factory()->withoutManager()->superAdmin()->create());
 
         $client = Client::factory()->create();
         $application = Application::query()->firstOrFail();
 
-        $this->postJson('/api/subscriptions/mutate', [
+        $this->postJson('/api/clients/mutate', [
             'mutate' => [
                 [
-                    'operation' => 'create',
-                    'attributes' => [
-                        'client_id' => $client->getKey(),
-                        'application_id' => $application->getKey(),
-                        'licenses' => 25,
+                    'operation' => 'update',
+                    'key' => $client->getKey(),
+                    'relations' => [
+                        'subscriptions' => [
+                            [
+                                'operation' => 'create',
+                                'attributes' => [
+                                    'application_id' => $application->getKey(),
+                                    'licenses' => 25,
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -56,13 +60,20 @@ class SubscriptionManagementTest extends TestCase
         $client = Client::factory()->create();
         $application = Application::query()->firstOrFail();
 
-        $this->postJson('/api/subscriptions/mutate', [
+        $this->postJson('/api/clients/mutate', [
             'mutate' => [
                 [
-                    'operation' => 'create',
-                    'attributes' => [
-                        'client_id' => $client->getKey(),
-                        'application_id' => $application->getKey(),
+                    'operation' => 'update',
+                    'key' => $client->getKey(),
+                    'relations' => [
+                        'subscriptions' => [
+                            [
+                                'operation' => 'create',
+                                'attributes' => [
+                                    'application_id' => $application->getKey(),
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -71,7 +82,22 @@ class SubscriptionManagementTest extends TestCase
         $this->assertDatabaseEmpty('subscriptions');
     }
 
-    public function test_search_is_scoped_to_the_users_client(): void
+    public function test_super_admin_deletes_a_subscription_on_the_subscriptions_resource(): void
+    {
+        Passport::actingAs(User::factory()->withoutManager()->superAdmin()->create());
+
+        $subscription = Subscription::factory()->create([
+            'application_id' => Application::query()->firstOrFail()->getKey(),
+        ]);
+
+        $this->deleteJson('/api/subscriptions', [
+            'resources' => [$subscription->getKey()],
+        ])->assertSuccessful();
+
+        $this->assertDatabaseMissing('subscriptions', ['id' => $subscription->getKey()]);
+    }
+
+    public function test_subscriptions_are_scoped_to_the_users_client(): void
     {
         $clientA = Client::factory()->create();
         $clientB = Client::factory()->create();
@@ -88,9 +114,17 @@ class SubscriptionManagementTest extends TestCase
 
         Passport::actingAs($admin);
 
-        $this->postJson('/api/subscriptions/search', ['search' => []])
+        $this->postJson('/api/clients/search', [
+            'search' => [
+                'includes' => [
+                    ['relation' => 'subscriptions'],
+                ],
+            ],
+        ])
             ->assertSuccessful()
             ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.id', $ownSubscription->getKey());
+            ->assertJsonPath('data.0.id', $clientA->getKey())
+            ->assertJsonCount(1, 'data.0.subscriptions')
+            ->assertJsonPath('data.0.subscriptions.0.id', $ownSubscription->getKey());
     }
 }

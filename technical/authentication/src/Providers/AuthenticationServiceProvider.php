@@ -23,15 +23,14 @@ class AuthenticationServiceProvider extends LayerServiceProvider
 
     public function register(): void
     {
-        // Headless Fortify configuration (views=false, api guard, 2FA feature).
+        // Headless Fortify configuration (views=false, api guard).
         $this->overrideConfigFrom(__DIR__.'/../../config/fortify.php', 'fortify');
 
         // Merge the Microsoft Socialite credentials into the services config.
         $this->overrideConfigFrom(__DIR__.'/../../config/services.php', 'services');
 
         // Fortify's own HTTP controllers are session + StatefulGuard based. This
-        // layer ships stateless replacements, so Fortify's routes are disabled;
-        // its guard-free Actions (2FA, recovery codes) are still used directly.
+        // layer ships stateless replacements, so Fortify's routes are disabled.
         Fortify::ignoreRoutes();
     }
 

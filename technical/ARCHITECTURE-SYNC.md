@@ -145,7 +145,7 @@ On ne partage **ni schéma, ni macro, ni modèle**. Le seul contrat entre mère 
 **la forme du payload JSON** émis pour chaque agrégat. Concrètement :
 
 - **Côté mère**, chaque agrégat syncable produit son payload via `toSyncPayload()` (défaut
-  = `attributesToArray()`, qui respecte `$hidden` → jamais `password`/`two_factor_*`). Ce
+  = `attributesToArray()`, qui respecte `$hidden` → jamais `password`). Ce
   payload est **figé par un test** : `dailyapps/event-distribution/tests/Feature/PayloadContractTest.php`
   vérifie que `clients`/`sites`/`users` portent bien leurs clés de contrat (`id`, `name`,
   `client_id`, `site_id`, `manager_id`, timestamps, `deleted_at`…) et **qu'aucun secret
@@ -221,8 +221,8 @@ Mécanique :
 - **Modèles synchronisés** = noyau identité/orga (`Site`, `Client`, plus tard `User`,
   `professions`). Ils implémentent l'interface **`SyncableAggregate`** et utilisent le trait
   **`SyncsToReplica`** (`syncAggregateType()`, `syncTenantScope()`, `toSyncPayload()` —
-  défaut = `attributesToArray()`, qui respecte `$hidden`, donc jamais `password`/
-  `two_factor_*`). `Site::syncTenantScope()` = `client_id` ; `Client::syncTenantScope()` =
+  défaut = `attributesToArray()`, qui respecte `$hidden`, donc jamais `password`).
+  `Site::syncTenantScope()` = `client_id` ; `Client::syncTenantScope()` =
   sa propre clé.
 - **Listeners synchrones** (`dailyapps/event-distribution`) délégant au
   **`DomainEventRecorder`** (seul écrivain sanctionné de l'outbox). Câblage via une **config
@@ -442,9 +442,9 @@ modifiables. La garde est donc **par colonne**, pas globale :
   (le job de livraison n'est même pas créé pour une `Application` non souscrite à l'org), pas
   seulement chez l'enfant — défense en profondeur. Le pull est borné par `scopeFor()` à
   l'**ensemble des `client_id` lisibles** par l'enfant.
-- **Minimisation du payload** : seuls les champs nécessaires ; **jamais** `password`,
-  `two_factor_secret`, `two_factor_recovery_codes` (déjà `#[Hidden]` sur `User`, et vérifié
-  par `PayloadContractTest` + `SyncPayloadSecrecyTest`).
+- **Minimisation du payload** : seuls les champs nécessaires ; **jamais** `password`
+  (déjà `#[Hidden]` sur `User`, et vérifié par `PayloadContractTest` +
+  `SyncPayloadSecrecyTest`).
 - **Rotation de secret** : secrets versionnés (`secret_id` dans l'en-tête) → signer avec le
   nouveau pendant que l'enfant accepte l'ancien sur une fenêtre de recouvrement. Telescope/
   Horizon doivent masquer signatures et secrets.

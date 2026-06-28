@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Lomkit\Access\Controls\HasControl;
 use Spatie\MediaLibrary\HasMedia;
@@ -29,7 +28,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes'])]
+#[Hidden(['password'])]
 #[UseFactory(UserFactory::class)]
 class User extends Authenticatable implements HasLocalePreference, HasMedia, MustVerifyEmail, SyncableAggregate
 {
@@ -42,7 +41,6 @@ class User extends Authenticatable implements HasLocalePreference, HasMedia, Mus
     use Notifiable;
     use SoftDeletes;
     use SyncsToReplica;
-    use TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.

@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Technical\Authentication\Actions\AuthenticateMicrosoftUser;
 use Technical\Authentication\Actions\IssueAccessToken;
 use Technical\Authentication\Enums\AuthErrorCode;
-use Technical\Authentication\Support\TwoFactorPendingToken;
 
 /**
  * "Sign in with Microsoft" (Azure AD), driven statelessly — Socialite runs in
@@ -27,7 +26,6 @@ class MicrosoftController extends Controller
     public function __construct(
         private readonly AuthenticateMicrosoftUser $authenticateMicrosoftUser,
         private readonly IssueAccessToken $issueAccessToken,
-        private readonly TwoFactorPendingToken $pendingToken,
     ) {}
 
     public function redirect(): JsonResponse
@@ -52,14 +50,6 @@ class MicrosoftController extends Controller
                 ['error' => AuthErrorCode::UserNotFound],
                 SymfonyResponse::HTTP_NOT_FOUND,
             );
-        }
-
-        if ($user->hasEnabledTwoFactorAuthentication()) {
-            return response()->json([
-                'two_factor' => true,
-                'pending_token' => $this->pendingToken->issue($user->getKey()),
-                'expires_in' => $this->pendingToken->ttlSeconds(),
-            ]);
         }
 
         return response()->json($this->issueAccessToken->handle($user));

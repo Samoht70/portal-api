@@ -35,7 +35,6 @@ storage/*.key
 .nova/
 .vscode/
 .zed/
-_ide_helper.php
 Homestead.json
 Homestead.yaml
 

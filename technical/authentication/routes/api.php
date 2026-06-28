@@ -6,8 +6,6 @@ use Technical\Authentication\Http\Controllers\LoginController;
 use Technical\Authentication\Http\Controllers\MicrosoftController;
 use Technical\Authentication\Http\Controllers\PasswordResetController;
 use Technical\Authentication\Http\Controllers\SessionController;
-use Technical\Authentication\Http\Controllers\TwoFactorAuthenticationController;
-use Technical\Authentication\Http\Controllers\TwoFactorChallengeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +13,8 @@ use Technical\Authentication\Http\Controllers\TwoFactorChallengeController;
 |--------------------------------------------------------------------------
 |
 | The `api` prefix is applied by the layer provider's withRouting(); only the
-| `auth/` segment is declared here. Password reset and two-factor management
-| (enable / confirm / recovery codes) are served by Fortify's own headless
-| routes — they are not redefined here.
+| `auth/` segment is declared here. Password reset is served by Fortify's own
+| headless routes — it is not redefined here.
 |
 */
 
@@ -26,9 +23,6 @@ Route::prefix('auth')
         // --- Public (stateless) ---
         Route::post('login', [LoginController::class, 'login'])
             ->name('auth.login');
-
-        Route::post('two-factor-challenge', [TwoFactorChallengeController::class, 'store'])
-            ->name('auth.two-factor-challenge');
 
         Route::get('email/verify/{user}/{hash}', [EmailVerificationController::class, 'verify'])
             ->middleware('signed')
@@ -57,15 +51,5 @@ Route::prefix('auth')
                 Route::post('email/verification-notification', [EmailVerificationController::class, 'resend'])
                     ->middleware('throttle:6,1')
                     ->name('verification.send');
-
-                // Two-factor enrolment management.
-                Route::post('two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
-                    ->name('two-factor.enable');
-                Route::post('two-factor-authentication/confirm', [TwoFactorAuthenticationController::class, 'confirm'])
-                    ->name('two-factor.confirm');
-                Route::delete('two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy'])
-                    ->name('two-factor.disable');
-                Route::post('two-factor-recovery-codes', [TwoFactorAuthenticationController::class, 'recovery'])
-                    ->name('two-factor.recovery-codes');
             });
     });
