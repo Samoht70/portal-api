@@ -3,7 +3,6 @@
 namespace Functional\Applications\Filament\Resources\Applications\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -12,11 +11,6 @@ use Filament\Tables\Table;
 class RolesRelationManager extends RelationManager
 {
     protected static string $relationship = 'roles';
-
-    public function form(Schema $schema): Schema
-    {
-        return $schema->components([]);
-    }
 
     public function table(Table $table): Table
     {

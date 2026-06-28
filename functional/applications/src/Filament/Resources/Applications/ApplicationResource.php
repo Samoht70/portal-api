@@ -4,11 +4,9 @@ namespace Functional\Applications\Filament\Resources\Applications;
 
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Functional\Applications\Filament\Resources\Applications\Pages\ListApplications;
 use Functional\Applications\Filament\Resources\Applications\RelationManagers\RolesRelationManager;
-use Functional\Applications\Filament\Resources\Applications\Schemas\ApplicationForm;
 use Functional\Applications\Filament\Resources\Applications\Tables\ApplicationsTable;
 use Functional\Applications\Models\Application;
 
@@ -20,11 +18,6 @@ class ApplicationResource extends Resource
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cube';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Applications';
-
-    public static function form(Schema $schema): Schema
-    {
-        return ApplicationForm::configure($schema);
-    }
 
     public static function table(Table $table): Table
     {
