@@ -43,3 +43,4 @@ Homestead.yaml
 *.log
 .DS_Store
 Thumbs.db
+/docs
