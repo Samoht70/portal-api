@@ -7,7 +7,6 @@ use Dailyapps\EventDistribution\Contracts\SyncableAggregate;
 use Functional\Applications\Models\ApplicationRole;
 use Functional\Organizations\Models\Site;
 use Functional\Users\Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -30,7 +29,7 @@ use Technical\Filament\Models\PanelUser;
 #[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
 #[Hidden(['password'])]
 #[UseFactory(UserFactory::class)]
-class User extends PanelUser implements HasLocalePreference, HasMedia, MustVerifyEmail, SyncableAggregate
+class User extends PanelUser implements HasLocalePreference, HasMedia, SyncableAggregate
 {
     use HasApiTokens;
     use HasControl;
