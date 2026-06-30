@@ -21,8 +21,11 @@ class UserForm
                 ->required(),
 
             Select::make('manager_id')
-                ->relationship('directManager', modifyQueryUsing: fn (Builder $query): Builder => $query->orderBy('lastname')->orderBy('firstname'))
-                ->getOptionLabelFromRecordUsing(fn (User $record): string => "{$record->lastname} {$record->firstname}")
+                ->relationship(
+                    'directManager',
+                    modifyQueryUsing: fn (Builder $query): Builder => $query->orderBy('lastname')->orderBy('firstname')
+                )
+                ->getOptionLabelFromRecordUsing(fn (User $record): string => "$record->lastname $record->firstname")
                 ->searchable(['lastname', 'firstname'])
                 ->preload(),
 
