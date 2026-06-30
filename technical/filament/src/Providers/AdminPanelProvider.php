@@ -10,6 +10,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Functional\Applications\Filament\ApplicationsPanelPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -29,6 +30,9 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors(['primary' => Color::Indigo])
             ->pages([Dashboard::class])
+            ->plugins([
+                ApplicationsPanelPlugin::make(),
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
