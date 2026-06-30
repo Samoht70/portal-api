@@ -4,6 +4,7 @@ namespace Functional\Applications\Database\Factories;
 
 use Functional\Applications\Models\Pack;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Pack>
@@ -18,7 +19,7 @@ class PackFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'slug' => Str::slug(fake()->unique()->words(3, true)),
         ];
     }
 }
