@@ -26,7 +26,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Technical\Filament\Models\PanelUser;
 
-#[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language'])]
+#[Fillable(['id', 'site_id', 'manager_id', 'email', 'firstname', 'lastname', 'language', 'password'])]
 #[Hidden(['password'])]
 #[UseFactory(UserFactory::class)]
 class User extends PanelUser implements HasLocalePreference, HasMedia, SyncableAggregate
